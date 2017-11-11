@@ -21,4 +21,7 @@ RUN go-wrapper download -u github.com/golang/dep/cmd/dep \
 RUN dep ensure -v
 
 CMD ["go-wrapper", "run"]
-# RUN ["app"]
+
+# Build my app
+# RUN go build -o /app/main .
+# CMD ["/app/main"]
