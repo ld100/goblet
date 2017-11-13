@@ -8,6 +8,7 @@ RUN mkdir /app
 RUN mkdir /go/src/app
 ADD . /go/src/app
 WORKDIR /go/src/app
+# COPY Gopkg.toml Gopkg.lock ./
 
 # Install dependencies
 RUN apk --update add git
