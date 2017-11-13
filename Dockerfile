@@ -20,6 +20,8 @@ RUN go-wrapper download -u github.com/golang/dep/cmd/dep \
 # Get dependencies
 RUN dep ensure -v
 
+EXPOSE 8080
+
 CMD ["go-wrapper", "run"]
 
 # Build my app

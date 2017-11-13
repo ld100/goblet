@@ -6,11 +6,14 @@ services:
     volumes:
       - .:/go/src/app
     working_dir: /go/src/app
-    command: go run main.go
+    command: go run stringsvc.go
     links:
       - redis
     environment:
       REDIS_URL: redis:6379
+    ports:
+      - '8080:8080'
+      - '8443:8443'
 
   redis:
     image: redis:alpine
