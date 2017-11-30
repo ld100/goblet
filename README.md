@@ -9,10 +9,11 @@ Each package may consist on subpackages representing specific architecture level
 * validations models validation
 * repository - DAO objects
 * services - Service layer AKA Commands AKA Logics
-* rest - REST-specific server configuration and routes
-* grpc - gRPC-specific server configuration
+* controllers/rest - REST-specific server configuration, routes, controllers
+* controllers/grpc - gRPC-specific server configuration, controllers
 * controllers - nuff said
 * forms - forms and form validators
+* errors - just typed errors
 
 There are few exceptions however, there are still few non-domain packages:
 
