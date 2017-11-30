@@ -5,8 +5,8 @@ Inspired by [Clean Architecture](https://hackernoon.com/golang-clean-archithectu
 Each folder within src is a package usually focused around exact domain, e.g. users, orders, shipping.
 Each package may consist on subpackages representing specific architecture levels:
 
-* models
-* validations (model validators)
+* models - models structs with includes JSON/YAML/XML serialization instructions
+* validations models validation
 * repository - DAO objects
 * services - Service layer AKA Commands AKA Logics
 * rest - REST-specific server configuration and routes
