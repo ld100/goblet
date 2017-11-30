@@ -19,7 +19,8 @@ RUN go-wrapper download -u github.com/golang/dep/cmd/dep \
     # && rm -rf /usr/lib/go /go/src /go/pkg /var/cache/*
 
 # Get dependencies
-RUN dep ensure -v
+#RUN dep ensure -v
+RUN dep ensure
 
 EXPOSE 8080
 
