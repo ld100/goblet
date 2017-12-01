@@ -25,9 +25,13 @@
   name = "gopkg.in/redis.v4"
   version = "4.2.4"
 
+#[[constraint]]
+#  name = "github.com/go-kit/kit"
+#  version = "0.6.0"
+
 [[constraint]]
-  name = "github.com/go-kit/kit"
-  version = "0.6.0"
+  name = "github.com/go-chi/chi"
+  version = "3.3.1"
 
 [[constraint]]
   name = "github.com/prometheus/client_golang"

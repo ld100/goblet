@@ -6,22 +6,38 @@
 // 	fmt.Println("Hello World")
 // }
 
+//package main
+//
+//import (
+//	"fmt"
+//	"os"
+//
+//	redis "gopkg.in/redis.v4"
+//)
+//
+//func main() {
+//	client := redis.NewClient(&redis.Options{
+//		Addr:     os.Getenv("REDIS_URL"),
+//		Password: "", // no password set
+//		DB:       0,  // use default DB
+//	})
+//
+//	pong, err := client.Ping().Result()
+//	fmt.Println(pong, err)
+//}
+
+
 package main
 
 import (
-	"fmt"
-	"os"
-
-	redis "gopkg.in/redis.v4"
+	"net/http"
+	"github.com/go-chi/chi"
 )
 
 func main() {
-	client := redis.NewClient(&redis.Options{
-		Addr:     os.Getenv("REDIS_URL"),
-		Password: "", // no password set
-		DB:       0,  // use default DB
+	r := chi.NewRouter()
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("welcome"))
 	})
-
-	pong, err := client.Ping().Result()
-	fmt.Println(pong, err)
+	http.ListenAndServe(":8080", r)
 }
