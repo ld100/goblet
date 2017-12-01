@@ -8,10 +8,9 @@ Each package may consist on subpackages representing specific architecture level
 * models - models structs with includes JSON/YAML/XML serialization instructions
 * validations models validation
 * repository - DAO objects
-* services - Service layer AKA Commands AKA Logics
+* services - Service layer AKA Commands AKA Logic
 * controllers/rest - REST-specific server configuration, routes, controllers
 * controllers/grpc - gRPC-specific server configuration, controllers
-* controllers - nuff said
 * forms - forms and form validators
 * errors - just typed errors
 

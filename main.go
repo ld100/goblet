@@ -1,11 +1,3 @@
-// package main
-
-// import "fmt"
-
-// func main() {
-// 	fmt.Println("Hello World")
-// }
-
 //package main
 //
 //import (
@@ -26,18 +18,19 @@
 //	fmt.Println(pong, err)
 //}
 
-
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"github.com/go-chi/chi"
 )
 
-func main() {
-	r := chi.NewRouter()
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("welcome"))
-	})
-	http.ListenAndServe(":8080", r)
-}
+ func main() {
+ 	fmt.Println("Hello World")
+ 	r := chi.NewRouter()
+ 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+ 		w.Write([]byte("welcome"))
+ 	})
+ 	http.ListenAndServe(":8080", r)
+ }
