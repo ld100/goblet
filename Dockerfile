@@ -2,12 +2,14 @@ FROM golang:1.9.2-alpine
 
 # Set go bin which doesn't appear to be set already.
 ENV GOBIN /go/bin
+ENV WORKDIR /go/src/app
+ENV BUILDDIR /app
 
 # build directories
-RUN mkdir /app
-RUN mkdir /go/src/app
-ADD . /go/src/app
-WORKDIR /go/src/app
+RUN mkdir $BUILDDIR
+RUN mkdir $WORKDIR
+ADD . $WORKDIR
+WORKDIR $WORKDIR
 # COPY Gopkg.toml Gopkg.lock ./
 
 # Install dependencies
@@ -27,5 +29,5 @@ EXPOSE 8080
 CMD ["go-wrapper", "run"]
 
 # Build my app
-# RUN go build -o /app/main .
-# CMD ["/app/main"]
+# RUN go build -o $BUILDDIR/main .
+# CMD ["$BUILDDIR/main"]
