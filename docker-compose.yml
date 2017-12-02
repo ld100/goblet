@@ -1,6 +1,15 @@
 version: "2"
 
 services:
+  postgres:
+    image: 'postgres:alpine'
+    volumes:
+      - './postgres-data:/var/lib/postgresql/data'
+    environment:
+      POSTGRES_USER: postgres
+      PGDATA: /tmp
+    ports:
+      - '5432:5432'
   app:
     build: .
     volumes:
@@ -11,6 +20,11 @@ services:
 #      - redis
     environment:
       REDIS_URL: redis:6379
+      APP_ENV: development
+      DB_HOST: postgres
+      DB_USER: postgres
+      DB_PASSWORD: ''
+      DB_NAME: app_development
     ports:
       - '8080:8080'
       - '8443:8443'
