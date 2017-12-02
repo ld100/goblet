@@ -2,12 +2,12 @@ FROM golang:1.9.2-alpine
 
 # Set go bin which doesn't appear to be set already.
 ENV GOBIN /go/bin
-ENV WORKDIR /go/src/app
+ENV WORKDIR /go/src/github.com/ld100/goblet
 ENV BUILDDIR /app
 
 # build directories
-RUN mkdir $BUILDDIR
-RUN mkdir $WORKDIR
+RUN mkdir -p $BUILDDIR
+RUN mkdir -p $WORKDIR
 ADD . $WORKDIR
 WORKDIR $WORKDIR
 # COPY Gopkg.toml Gopkg.lock ./

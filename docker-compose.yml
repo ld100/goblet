@@ -13,11 +13,11 @@ services:
   app:
     build: .
     volumes:
-      - .:/go/src/app
-    working_dir: /go/src/app
+      - .:/go/src/github.com/ld100/goblet
+    working_dir: /go/src/github.com/ld100/goblet
     command: go run main.go
-#    links:
-#      - redis
+    links:
+      - postgres
     environment:
       REDIS_URL: redis:6379
       APP_ENV: development
@@ -28,6 +28,3 @@ services:
     ports:
       - '8080:8080'
       - '8443:8443'
-
-#  redis:
-#    image: redis:alpine
