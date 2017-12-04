@@ -1,4 +1,4 @@
-package models
+package users
 
 import (
 	"fmt"
@@ -29,12 +29,13 @@ func main() {
 }
 
 type User struct {
-	ID        uint   `gorm:"primary_key"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	FirstName string `gorm:"size:255"`        // Default size for string is 255, reset it with this tag
-	LastName  string `gorm:"size:255"`        // Default size for string is 255, reset it with this tag
-	Email     string `gorm:"not null;unique"` // Set field as not nullable and unique
+	ID             uint   `gorm:"primary_key"`
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
+	FirstName      string `gorm:"size:255"`        // Default size for string is 255, reset it with this tag
+	LastName       string `gorm:"size:255"`        // Default size for string is 255, reset it with this tag
+	Email          string `gorm:"not null;unique"` // Set field as not nullable and unique
+	PasswordDigest string
 }
 
 // GORM callback
