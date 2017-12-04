@@ -28,3 +28,27 @@ services:
     ports:
       - '8080:8080'
       - '8443:8443'
+  prom:
+    image: quay.io/prometheus/prometheus:latest
+    volumes:
+     - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+#    command: "-config.file=/etc/prometheus/prometheus.yml -storage.local.path=/prometheus -storage.local.memory-chunks=10000"
+    ports:
+     - 9090:9090
+    depends_on:
+     - exporter
+  exporter:
+    image: prom/node-exporter:latest
+    ports:
+     - "9100:9100"
+#    network_mode: host
+  grafana:
+    image: grafana/grafana
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: secret
+    volumes:
+      - grafana-data:/var/lib/grafana
+    ports:
+     - "3000:3000"
+    depends_on:
+      - prom
