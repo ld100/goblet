@@ -22,17 +22,17 @@ services:
       REDIS_URL: redis:6379
       APP_ENV: development
       DB_HOST: postgres
+      DB_PORT: 5432
       DB_USER: postgres
       DB_PASSWORD: ''
-      DB_NAME: app_development
+      DB_NAME: goblet_development
     ports:
       - '8080:8080'
       - '8443:8443'
-  prom:
-    image: quay.io/prometheus/prometheus:latest
+  prometheus:
+    image: prom/prometheus
     volumes:
      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
-#    command: "-config.file=/etc/prometheus/prometheus.yml -storage.local.path=/prometheus -storage.local.memory-chunks=10000"
     ports:
      - 9090:9090
     depends_on:
@@ -47,8 +47,8 @@ services:
     environment:
       GF_SECURITY_ADMIN_PASSWORD: secret
     volumes:
-      - grafana-data:/var/lib/grafana
+      - './grafana-data:/var/lib/grafana'
     ports:
      - "3000:3000"
     depends_on:
-      - prom
+      - prometheus

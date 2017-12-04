@@ -6,23 +6,50 @@ import (
 	"time"
 	"errors"
 	"log"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+
+	"github.com/ld100/goblet/util/database"
 )
 
-func main() {
+// TODO: Remove this method, use full-fledged migrations and GORM connection polling instead
+func MigrateUsers() {
+	// Create database if not exist
+	database.CreateDB(os.Getenv("DB_NAME"))
+
 	connString := fmt.Sprintf(
-		"host=%s user=%s dbname=%s sslmode=disable password=%s",
+		"host=%v user=%v dbname=%v sslmode=disable password=%v",
 		os.Getenv("DB_HOST"),
 		os.Getenv("DB_USER"),
 		os.Getenv("DB_NAME"),
 		os.Getenv("DB_PASSWORD"),
 	)
-	db, err := gorm.Open(connString)
+	db, err := gorm.Open("postgres", connString)
 
 	if err != nil {
+		panic(err)
 		log.Fatal(err)
+	}
+
+	db.DropTable(&User{})
+	db.AutoMigrate(&User{})
+
+	password, err := HashPassword("password")
+	if err != nil {
+		panic(err)
+		//log.Fatal(err)
+	}
+
+	user := User{
+		FirstName:      "John",
+		LastName:       "Doe",
+		Email:          "you@example.com",
+		PasswordDigest: password,
+	}
+	if db.NewRecord(user) {
+		db.Create(&user)
 	}
 
 	defer db.Close()
@@ -50,4 +77,14 @@ func (u *User) BeforeSave() (err error) {
 func (u *User) Validate() (err error) {
 	fmt.Println("Validating User model before save")
 	return
+}
+
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	return string(bytes), err
+}
+
+func CheckPasswordHash(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
 }

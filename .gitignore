@@ -21,3 +21,7 @@ Gopkg.lock
 
 # GoLand
 .idea/
+
+# Local data storage
+grafana-data/
+postgres-data/

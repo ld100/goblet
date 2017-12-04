@@ -4,3 +4,7 @@ vendor/pkg
 .go-pkg-cache
 .git
 .idea/
+
+# Local data storage
+grafana-data/
+postgres-data/

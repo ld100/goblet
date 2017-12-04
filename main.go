@@ -35,11 +35,14 @@ import (
 	"github.com/go-chi/docgen"
 	"github.com/go-chi/render"
 	"github.com/sirupsen/logrus"
+
+	usermodels "github.com/ld100/goblet/users"
 )
 
 var routes = flag.Bool("routes", false, "Generate router documentation")
 
 func main() {
+	usermodels.MigrateUsers()
 	fmt.Println("Hello World")
 	// Setup the logger backend using sirupsen/logrus and configure
 	// it to use a custom JSONFormatter. See the logrus docs for how to
