@@ -1,42 +1,20 @@
 package users
 
 import (
-	"fmt"
-	"os"
 	"time"
 	"errors"
 	"log"
-	"encoding/base64"
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"github.com/qor/validations"
-
-	"github.com/ld100/goblet/util/database"
+	"github.com/ld100/goblet/environment"
 )
 
 var db *gorm.DB
 
-// TODO: Remove this method, use full-fledged migrations and GORM connection polling instead
+// TODO: Remove this test func
 func MigrateUsers() {
-	// Create database if not exist
-	database.CreateDB(os.Getenv("DB_NAME"))
-
-	connString := fmt.Sprintf(
-		"host=%v user=%v dbname=%v sslmode=disable password=%v",
-		os.Getenv("DB_HOST"),
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_NAME"),
-		os.Getenv("DB_PASSWORD"),
-	)
-	db, err := gorm.Open("postgres", connString)
-
-	if err != nil {
-		panic(err)
-		log.Fatal(err)
-	}
-	validations.RegisterCallbacks(db)
+	db := environment.GDB
 
 	db.DropTable(&User{})
 	db.AutoMigrate(&User{})
@@ -68,13 +46,10 @@ type User struct {
 
 // GORM callback: Encode password before create
 func (u *User) BeforeCreate() (err error) {
-	// Do not encode already encoded password
-	if !IsBase64(u.Password) {
-		u.Password, err = HashPassword(u.Password)
-		if err != nil {
-			err = errors.New("cannot hash user password")
-			log.Fatal(err)
-		}
+	u.Password, err = HashPassword(u.Password)
+	if err != nil {
+		err = errors.New("cannot hash user password")
+		log.Fatal(err)
 	}
 	return
 }
@@ -92,10 +67,5 @@ func HashPassword(password string) (string, error) {
 
 func CheckPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil
-}
-
-func IsBase64(s string) bool {
-	_, err := base64.StdEncoding.DecodeString(s)
 	return err == nil
 }

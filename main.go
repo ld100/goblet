@@ -1,23 +1,3 @@
-//package main
-//
-//import (
-//	"fmt"
-//	"os"
-//
-//	redis "gopkg.in/redis.v4"
-//)
-//
-//func main() {
-//	client := redis.NewClient(&redis.Options{
-//		Addr:     os.Getenv("REDIS_URL"),
-//		Password: "", // no password set
-//		DB:       0,  // use default DB
-//	})
-//
-//	pong, err := client.Ping().Result()
-//	fmt.Println(pong, err)
-//}
-
 package main
 
 import (
@@ -29,6 +9,7 @@ import (
 	"net/http"
 	"strings"
 	"time"
+	"os"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -36,12 +17,27 @@ import (
 	"github.com/go-chi/render"
 	"github.com/sirupsen/logrus"
 
+	"github.com/ld100/goblet/util/database"
 	usermodels "github.com/ld100/goblet/users"
+	"github.com/ld100/goblet/environment"
 )
 
 var routes = flag.Bool("routes", false, "Generate router documentation")
 
 func main() {
+	// Create database if not exist
+	database.CreateDB(os.Getenv("DB_NAME"))
+
+	// Initiate global ORM var
+	connString := fmt.Sprintf(
+		"host=%v user=%v dbname=%v sslmode=disable password=%v",
+		os.Getenv("DB_HOST"),
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_NAME"),
+		os.Getenv("DB_PASSWORD"),
+	)
+	environment.InitGDB(connString)
+
 	usermodels.MigrateUsers()
 	fmt.Println("Hello World")
 	// Setup the logger backend using sirupsen/logrus and configure
