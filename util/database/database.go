@@ -8,14 +8,6 @@ import (
 	_ "github.com/lib/pq"
 )
 
-//var dataSourceName string = fmt.Sprintf(
-//	"%s:%s@tcp(%s:%s)/",
-//	os.Getenv("DB_USER"),
-//	os.Getenv("DB_PASSWORD"),
-//	os.Getenv("DB_HOST"),
-//	os.Getenv("DB_PORT"),
-//)
-
 var dataSourceName string = fmt.Sprintf(
 	"host=%s user=%s sslmode=disable password=%s",
 	os.Getenv("DB_HOST"),
