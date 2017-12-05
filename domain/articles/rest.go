@@ -10,7 +10,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
 
-	"github.com/ld100/goblet/util/web"
+	rest "github.com/ld100/goblet/server/rest/errors"
 )
 
 func ArticleRouter() chi.Router {
@@ -43,7 +43,7 @@ func paginate(next http.Handler) http.Handler {
 
 func ListArticles(w http.ResponseWriter, r *http.Request) {
 	if err := render.RenderList(w, r, NewArticleListResponse(articles)); err != nil {
-		render.Render(w, r, web.ErrRender(err))
+		render.Render(w, r, rest.ErrRender(err))
 		return
 	}
 }
@@ -61,11 +61,11 @@ func ArticleCtx(next http.Handler) http.Handler {
 		} else if articleSlug := chi.URLParam(r, "articleSlug"); articleSlug != "" {
 			article, err = dbGetArticleBySlug(articleSlug)
 		} else {
-			render.Render(w, r, web.ErrNotFound)
+			render.Render(w, r, rest.ErrNotFound)
 			return
 		}
 		if err != nil {
-			render.Render(w, r, web.ErrNotFound)
+			render.Render(w, r, rest.ErrNotFound)
 			return
 		}
 
@@ -85,7 +85,7 @@ func SearchArticles(w http.ResponseWriter, r *http.Request) {
 func CreateArticle(w http.ResponseWriter, r *http.Request) {
 	data := &ArticleRequest{}
 	if err := render.Bind(r, data); err != nil {
-		render.Render(w, r, web.ErrInvalidRequest(err))
+		render.Render(w, r, rest.ErrInvalidRequest(err))
 		return
 	}
 
@@ -107,7 +107,7 @@ func GetArticle(w http.ResponseWriter, r *http.Request) {
 	article := r.Context().Value("article").(*Article)
 
 	if err := render.Render(w, r, NewArticleResponse(article)); err != nil {
-		render.Render(w, r, web.ErrRender(err))
+		render.Render(w, r, rest.ErrRender(err))
 		return
 	}
 }
@@ -118,7 +118,7 @@ func UpdateArticle(w http.ResponseWriter, r *http.Request) {
 
 	data := &ArticleRequest{Article: article}
 	if err := render.Bind(r, data); err != nil {
-		render.Render(w, r, web.ErrInvalidRequest(err))
+		render.Render(w, r, rest.ErrInvalidRequest(err))
 		return
 	}
 	article = data.Article
@@ -138,7 +138,7 @@ func DeleteArticle(w http.ResponseWriter, r *http.Request) {
 
 	article, err = dbRemoveArticle(article.ID)
 	if err != nil {
-		render.Render(w, r, web.ErrInvalidRequest(err))
+		render.Render(w, r, rest.ErrInvalidRequest(err))
 		return
 	}
 

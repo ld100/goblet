@@ -6,7 +6,7 @@ Application consists of configuration and Golang code. Configuration is concentr
 Go code consists of common use packages and domain-specific ones. Common use packages are:
 
 * cmd − command-line tools
-* server − entry point for server-related code. Consists of REST and gRPC servers.
+* server − entry point for server-related code. Consists of REST and gRPC servers and its tools (utils, error handlers).
 * util − project-wide utility code, including database, cryptography, data migration, environment, etc
 
 `domain` includes domain-specific packages, e.g. users, orders, articles. Each domain package may consist of the following parts:
@@ -27,4 +27,3 @@ Go code consists of common use packages and domain-specific ones. Common use pac
 * log − Logrus library wrapper to be used in all parts of the app for logging.
 * migrate − database migrations and seeds. Probably would be moved out of util later.
 * securerandom − Golang's copy of Ruby's securerandom package. Used mostly for UUIDs generation.
-* Web-related code like custom error handlers or fileserver code, probably would be moved to the top server/rest package.
