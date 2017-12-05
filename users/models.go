@@ -11,7 +11,7 @@ import (
 	"github.com/ld100/goblet/log"
 )
 
-var db *gorm.DB
+//var db *gorm.DB
 //var log = logrus.New()
 
 
