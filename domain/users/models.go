@@ -7,8 +7,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"github.com/jinzhu/gorm"
 
-	"github.com/ld100/goblet/environment"
-	"github.com/ld100/goblet/log"
+	"github.com/ld100/goblet/util/environment"
+	"github.com/ld100/goblet/util/log"
 )
 
 // TODO: Remove this test func

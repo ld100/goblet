@@ -11,9 +11,9 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/pressly/lg"
 
-	"github.com/ld100/goblet/common"
-	"github.com/ld100/goblet/articles"
-	"github.com/ld100/goblet/admin"
+	"github.com/ld100/goblet/domain/common"
+	"github.com/ld100/goblet/domain/articles"
+	"github.com/ld100/goblet/domain/admin"
 )
 
 func Serve() {

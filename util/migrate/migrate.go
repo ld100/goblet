@@ -6,9 +6,9 @@ import (
 	"github.com/jinzhu/gorm"
 	"gopkg.in/gormigrate.v1"
 
-	"github.com/ld100/goblet/log"
-	"github.com/ld100/goblet/environment"
-	usermodels "github.com/ld100/goblet/users"
+	"github.com/ld100/goblet/util/log"
+	"github.com/ld100/goblet/util/environment"
+	"github.com/ld100/goblet/domain/users"
 )
 
 func Migrate() {
@@ -50,7 +50,7 @@ func Migrate() {
 // TODO: Wrap in transactions
 func Seed() {
 	log.Debug("Database seed initiated")
-	user := usermodels.User{
+	user := users.User{
 		FirstName: "Admin",
 		LastName:  "Adminovich",
 		Email:     "robot@example.com",

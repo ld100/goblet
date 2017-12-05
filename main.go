@@ -5,8 +5,8 @@ import (
 	"os"
 	"github.com/ld100/goblet/util/database"
 	//"github.com/ld100/goblet/users"
-	"github.com/ld100/goblet/environment"
-	"github.com/ld100/goblet/migrate"
+	"github.com/ld100/goblet/util/environment"
+	"github.com/ld100/goblet/util/migrate"
 	"github.com/ld100/goblet/server/rest"
 )
 

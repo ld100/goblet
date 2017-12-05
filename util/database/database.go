@@ -6,7 +6,7 @@ import (
 	"database/sql"
 
 	_ "github.com/lib/pq"
-	"github.com/ld100/goblet/log"
+	"github.com/ld100/goblet/util/log"
 )
 
 var dataSourceName string = fmt.Sprintf(
