@@ -19,13 +19,11 @@ import (
 	//usermodels "github.com/ld100/goblet/users"
 	"github.com/ld100/goblet/environment"
 	"github.com/ld100/goblet/migrate"
+	"github.com/ld100/goblet/common"
 )
 
 func main() {
 	prepareData()
-
-	fmt.Println("Hello World")
-
 	// Setup the logger backend using sirupsen/logrus and configure
 	// it to use a custom JSONFormatter. See the logrus docs for how to
 	// configure the backend at github.com/sirupsen/logrus
@@ -44,17 +42,9 @@ func main() {
 	r.Use(middleware.URLFormat)
 	r.Use(render.SetContentType(render.ContentTypeJSON))
 
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("root."))
-	})
-
-	r.Get("/ping", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("pong"))
-	})
-
-	r.Get("/panic", func(w http.ResponseWriter, r *http.Request) {
-		panic("test")
-	})
+	r.Get("/", common.RootController)
+	r.Get("/ping", common.PingController)
+	r.Get("/panic", common.PanicController)
 
 	// RESTy routes for "articles" resource
 	r.Route("/articles", func(r chi.Router) {
