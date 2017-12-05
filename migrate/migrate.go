@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/jinzhu/gorm"
-	gormigrate "gopkg.in/gormigrate.v1"
+	"gopkg.in/gormigrate.v1"
 
 	"github.com/ld100/goblet/log"
 	"github.com/ld100/goblet/environment"
