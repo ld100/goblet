@@ -3,21 +3,22 @@ package users
 import (
 	"time"
 	"errors"
-	"log"
-	"golang.org/x/crypto/bcrypt"
 
+	"golang.org/x/crypto/bcrypt"
 	"github.com/jinzhu/gorm"
+
 	"github.com/ld100/goblet/environment"
+	"github.com/ld100/goblet/log"
 )
 
 var db *gorm.DB
+//var log = logrus.New()
+
 
 // TODO: Remove this test func
 func MigrateUsers() {
-	db := environment.GDB
-
-	db.DropTable(&User{})
-	db.AutoMigrate(&User{})
+	environment.GDB.DropTable(&User{})
+	environment.GDB.AutoMigrate(&User{})
 
 	user := User{
 		FirstName: "John the",
@@ -25,13 +26,29 @@ func MigrateUsers() {
 		Email:     "you@example.com",
 		Password:  "password",
 	}
-	if db.NewRecord(user) {
-		//errs := db.Create(&user).GetErrors()
-		//fmt.Print(errs)
-		db.Create(&user)
-	}
 
-	defer db.Close()
+	var errs []error
+	errs = user.CreateUser()
+	if errs != nil {
+		log.Fatal(errs)
+	}
+	log.Debug("Created user entity with ID: ", user.ID)
+
+	defer environment.GDB.Close()
+}
+
+func (u *User) CreateUser() []error {
+	if environment.GDB.NewRecord(u) {
+		return environment.GDB.Create(&u).GetErrors()
+	}
+	return nil
+}
+
+func (u *User) DeleteUser() []error {
+	if !environment.GDB.NewRecord(u) {
+		return environment.GDB.Delete(&u).GetErrors()
+	}
+	return nil
 }
 
 type User struct {

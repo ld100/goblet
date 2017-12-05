@@ -40,6 +40,8 @@ func main() {
 
 	usermodels.MigrateUsers()
 	fmt.Println("Hello World")
+
+
 	// Setup the logger backend using sirupsen/logrus and configure
 	// it to use a custom JSONFormatter. See the logrus docs for how to
 	// configure the backend at github.com/sirupsen/logrus
