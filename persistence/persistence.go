@@ -5,8 +5,39 @@ import (
 	"os"
 	"strconv"
 	"database/sql"
+
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/qor/validations"
+	_ "github.com/lib/pq"
+
 	"github.com/ld100/goblet/util/log"
 )
+
+var SqlDB *sql.DB
+var GormDB *gorm.DB
+
+func InitSqlDB(ds *DataSource) {
+	var err error
+	SqlDB, err = sql.Open("postgres", ds.DSN())
+	if err != nil {
+		log.Error(err)
+	}
+
+	if err = SqlDB.Ping(); err != nil {
+		log.Error(err)
+	}
+}
+
+func InitGormDB(ds *DataSource) {
+	var err error
+	GormDB, err = gorm.Open("postgres", ds.DSN())
+	if err != nil {
+		log.Error(err)
+	}
+
+	validations.RegisterCallbacks(GormDB)
+}
 
 type DataSource struct {
 	Host     string
@@ -48,7 +79,7 @@ func (ds *DataSource) ShortDSN() string {
 // Fetch data from environment variables
 func (ds *DataSource) FetchENV() {
 	ds.Host = os.Getenv("DB_HOST")
-	ds.Port,_ = strconv.Atoi(os.Getenv("DB_PORT"))
+	ds.Port, _ = strconv.Atoi(os.Getenv("DB_PORT"))
 	ds.Username = os.Getenv("DB_USER")
 	ds.Password = os.Getenv("DB_PASSWORD")
 	ds.Database = os.Getenv("DB_NAME")

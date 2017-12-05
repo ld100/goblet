@@ -1,13 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"os"
-	//"github.com/ld100/goblet/users"
-	"github.com/ld100/goblet/util/environment"
+
+	"github.com/ld100/goblet/persistence"
 	"github.com/ld100/goblet/persistence/migrate"
 	"github.com/ld100/goblet/server/rest"
-	"github.com/ld100/goblet/persistence"
 )
 
 func main() {
@@ -18,6 +16,7 @@ func main() {
 	rest.Serve()
 }
 
+// TODO: Move whole chain of commands to persistence package
 func prepareData() {
 	// Create database if not exist
 	ds := &persistence.DataSource{}
@@ -25,16 +24,8 @@ func prepareData() {
 	ds.FetchENV()
 	ds.CreateDB(os.Getenv("DB_NAME"))
 
-
 	// Initiate global ORM var
-	connString := fmt.Sprintf(
-		"host=%v user=%v dbname=%v sslmode=disable password=%v",
-		os.Getenv("DB_HOST"),
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_NAME"),
-		os.Getenv("DB_PASSWORD"),
-	)
-	environment.InitGDB(connString)
+	persistence.InitGormDB(ds)
 
 	// Run migrations
 	migrate.Migrate()

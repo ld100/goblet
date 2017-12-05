@@ -7,14 +7,14 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"github.com/jinzhu/gorm"
 
-	"github.com/ld100/goblet/util/environment"
+	"github.com/ld100/goblet/persistence"
 	"github.com/ld100/goblet/util/log"
 )
 
 // TODO: Remove this test func
 func MigrateUsers() {
-	environment.GDB.DropTable(&User{})
-	environment.GDB.AutoMigrate(&User{})
+	persistence.GormDB.DropTable(&User{})
+	persistence.GormDB.AutoMigrate(&User{})
 
 	user := User{
 		FirstName: "John the",
@@ -61,38 +61,38 @@ func MigrateUsers() {
 	users = FindAllUsers()
 	log.Debug("Users found: ", len(users))
 
-	defer environment.GDB.Close()
+	defer persistence.GormDB.Close()
 }
 
 func (u *User) CreateUser() []error {
-	if environment.GDB.NewRecord(u) {
-		return environment.GDB.Create(&u).GetErrors()
+	if persistence.GormDB.NewRecord(u) {
+		return persistence.GormDB.Create(&u).GetErrors()
 	}
 	return nil
 }
 
 func (u *User) DeleteUser() []error {
-	if !environment.GDB.NewRecord(u) {
-		return environment.GDB.Delete(&u).GetErrors()
+	if !persistence.GormDB.NewRecord(u) {
+		return persistence.GormDB.Delete(&u).GetErrors()
 	}
 	return nil
 }
 
 func (u *User) SaveUser() []error {
-	return environment.GDB.Save(&u).GetErrors()
+	return persistence.GormDB.Save(&u).GetErrors()
 }
 
 func (u *User) FindUserByID() []error {
-	return environment.GDB.First(&u, u.ID).GetErrors()
+	return persistence.GormDB.First(&u, u.ID).GetErrors()
 }
 
 func (u *User) FindUserByEmail() []error {
-	return environment.GDB.Where("email = ?", u.Email).First(&u).GetErrors()
+	return persistence.GormDB.Where("email = ?", u.Email).First(&u).GetErrors()
 }
 
 func FindAllUsers() []*User {
 	var users []*User
-	errs := environment.GDB.Find(&users).GetErrors()
+	errs := persistence.GormDB.Find(&users).GetErrors()
 	if errs != nil {
 		log.Fatal(errs)
 	}

@@ -22,7 +22,6 @@ Go code consists of common use packages and domain-specific ones. Common use pac
 
 `util` packages consists of many (not always related) subpackages:
 
-* environment − global environment object for holding configuration and DB handles. Currently used mostly as a GORM DB handler.
 * hash − different hash utils, for example base64 operations.
 * log − Logrus library wrapper to be used in all parts of the app for logging.
 * securerandom − Golang's copy of Ruby's securerandom package. Used mostly for UUIDs generation.

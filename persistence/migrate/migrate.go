@@ -7,12 +7,12 @@ import (
 	"gopkg.in/gormigrate.v1"
 
 	"github.com/ld100/goblet/util/log"
-	"github.com/ld100/goblet/util/environment"
+	"github.com/ld100/goblet/persistence"
 	"github.com/ld100/goblet/domain/users"
 )
 
 func Migrate() {
-	db := environment.GDB
+	db := persistence.GormDB
 
 	db.LogMode(true)
 
@@ -57,15 +57,15 @@ func Seed() {
 		Password:  "password",
 	}
 
-	var errs []error
-	errs = user.FindUserByEmail()
-	if errs != nil {
-		log.Debug("user already exists: ", user.Email)
-	} else {
-		errs = user.CreateUser()
-		if errs != nil {
-			log.Fatal(errs)
+	db := persistence.GormDB
+	error := db.Where("email = ?", user.Email).First(&user)
+	if error != nil {
+		// User with this e-mail was not found, so let's create one
+		errors := db.Create(&user).GetErrors()
+		if len(errors) > 0 {
+			log.Fatal(errors)
+		} else {
+			log.Debug("created user entity with ID:", user.ID)
 		}
-		log.Debug("created user entity with ID: ", user.ID)
 	}
 }
