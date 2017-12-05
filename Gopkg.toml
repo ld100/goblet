@@ -23,6 +23,11 @@
   name = "github.com/sirupsen/logrus"
   version = "1.0.3"
 
+# Logrus middleware for CHI
+[[constraint]]
+    name = "github.com/pressly/lg"
+    version = "1.0.0"
+
 # Postgres pure Go library
 [[constraint]]
   name = "github.com/lib/pq"
