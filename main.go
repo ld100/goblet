@@ -3,11 +3,11 @@ package main
 import (
 	"fmt"
 	"os"
-	"github.com/ld100/goblet/util/database"
 	//"github.com/ld100/goblet/users"
 	"github.com/ld100/goblet/util/environment"
 	"github.com/ld100/goblet/persistence/migrate"
 	"github.com/ld100/goblet/server/rest"
+	"github.com/ld100/goblet/persistence"
 )
 
 func main() {
@@ -20,7 +20,11 @@ func main() {
 
 func prepareData() {
 	// Create database if not exist
-	database.CreateDB(os.Getenv("DB_NAME"))
+	ds := &persistence.DataSource{}
+	// Fetch database credentials from ENVIRONMENT
+	ds.FetchENV()
+	ds.CreateDB(os.Getenv("DB_NAME"))
+
 
 	// Initiate global ORM var
 	connString := fmt.Sprintf(
