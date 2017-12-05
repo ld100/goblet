@@ -6,7 +6,7 @@ import (
 	"github.com/ld100/goblet/util/database"
 	//"github.com/ld100/goblet/users"
 	"github.com/ld100/goblet/util/environment"
-	"github.com/ld100/goblet/util/migrate"
+	"github.com/ld100/goblet/persistence/migrate"
 	"github.com/ld100/goblet/server/rest"
 )
 

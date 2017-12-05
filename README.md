@@ -7,6 +7,7 @@ Go code consists of common use packages and domain-specific ones. Common use pac
 
 * cmd − command-line tools
 * server − entry point for server-related code. Consists of REST and gRPC servers and its tools (utils, error handlers).
+* persistence − database & ORM handlers, database setup, migration & seed operations.
 * util − project-wide utility code, including database, cryptography, data migration, environment, etc
 
 `domain` includes domain-specific packages, e.g. users, orders, articles. Each domain package may consist of the following parts:
@@ -25,5 +26,4 @@ Go code consists of common use packages and domain-specific ones. Common use pac
 * environment − global environment object for holding configuration and DB handles. Currently used mostly as a GORM DB handler.
 * hash − different hash utils, for example base64 operations.
 * log − Logrus library wrapper to be used in all parts of the app for logging.
-* migrate − database migrations and seeds. Probably would be moved out of util later.
 * securerandom − Golang's copy of Ruby's securerandom package. Used mostly for UUIDs generation.
