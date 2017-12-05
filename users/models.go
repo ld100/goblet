@@ -34,6 +34,37 @@ func MigrateUsers() {
 	}
 	log.Debug("Created user entity with ID: ", user.ID)
 
+	user.FirstName = "Peter"
+	errs = user.SaveUser()
+	if errs != nil {
+		log.Fatal(errs)
+	}
+	log.Debug("Updated user entity with ID: ", user.ID)
+
+	userCopy := User{ID: user.ID}
+	errs = userCopy.FindUserByID()
+	if errs != nil {
+		log.Fatal(errs)
+	}
+	log.Debug("Fetched another instance of user : ", userCopy.FirstName)
+
+	userEmailCopy := User{Email: user.Email}
+	errs = userEmailCopy.FindUserByEmail()
+	if errs != nil {
+		log.Fatal(errs)
+	}
+	log.Debug("Fetched another instance of user by e-mail : ", userEmailCopy.Email)
+
+	errs = user.DeleteUser()
+	if errs != nil {
+		log.Fatal(errs)
+	}
+	log.Debug("Deleted user entity with ID: ", user.ID)
+
+	var users []*User
+	users = FindAllUsers()
+	log.Debug("Users found: ", len(users))
+
 	defer environment.GDB.Close()
 }
 
@@ -51,7 +82,28 @@ func (u *User) DeleteUser() []error {
 	return nil
 }
 
-type User struct {
+func (u *User) SaveUser() []error {
+	return environment.GDB.Save(&u).GetErrors()
+}
+
+func (u *User) FindUserByID() []error {
+	return environment.GDB.First(&u, u.ID).GetErrors()
+}
+
+func (u *User) FindUserByEmail() []error {
+	return environment.GDB.Where("email = ?", u.Email).First(&u).GetErrors()
+}
+
+func FindAllUsers() []*User {
+	var users []*User
+	errs := environment.GDB.Find(&users).GetErrors()
+	if errs != nil {
+		log.Fatal(errs)
+	}
+	return users
+}
+
+	type User struct {
 	ID        uint   `gorm:"primary_key"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
