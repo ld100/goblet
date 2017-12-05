@@ -18,8 +18,9 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/ld100/goblet/util/database"
-	usermodels "github.com/ld100/goblet/users"
+	//usermodels "github.com/ld100/goblet/users"
 	"github.com/ld100/goblet/environment"
+	"github.com/ld100/goblet/migrate"
 )
 
 var routes = flag.Bool("routes", false, "Generate router documentation")
@@ -38,7 +39,13 @@ func main() {
 	)
 	environment.InitGDB(connString)
 
-	usermodels.MigrateUsers()
+	//usermodels.MigrateUsers()
+
+	// Run migrations
+	migrate.Migrate()
+
+	// Run db seed
+	migrate.Seed()
 	fmt.Println("Hello World")
 
 

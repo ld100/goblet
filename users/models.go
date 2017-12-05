@@ -99,7 +99,7 @@ func FindAllUsers() []*User {
 	return users
 }
 
-	type User struct {
+type User struct {
 	ID        uint   `gorm:"primary_key"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
