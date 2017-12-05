@@ -11,10 +11,6 @@ import (
 	"github.com/ld100/goblet/log"
 )
 
-//var db *gorm.DB
-//var log = logrus.New()
-
-
 // TODO: Remove this test func
 func MigrateUsers() {
 	environment.GDB.DropTable(&User{})
