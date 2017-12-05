@@ -6,6 +6,7 @@ import (
 	"database/sql"
 
 	_ "github.com/lib/pq"
+	"github.com/ld100/goblet/log"
 )
 
 var dataSourceName string = fmt.Sprintf(
@@ -26,7 +27,7 @@ func CreateDB(name string) {
 
 	_, err = db.Exec("CREATE DATABASE " + name)
 	if err != nil {
-		panic(err)
+		log.Info(err)
 	}
 }
 

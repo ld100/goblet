@@ -58,9 +58,14 @@ func Seed() {
 	}
 
 	var errs []error
-	errs = user.CreateUser()
+	errs = user.FindUserByEmail()
 	if errs != nil {
-		log.Fatal(errs)
+		log.Debug("user already exists: ", user.Email)
+	} else {
+		errs = user.CreateUser()
+		if errs != nil {
+			log.Fatal(errs)
+		}
+		log.Debug("created user entity with ID: ", user.ID)
 	}
-	log.Debug("Created user entity with ID: ", user.ID)
 }

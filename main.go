@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"flag"
 	"fmt"
 	"math/rand"
 	"net/http"
@@ -13,7 +12,6 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
-	"github.com/go-chi/docgen"
 	"github.com/go-chi/render"
 	"github.com/sirupsen/logrus"
 
@@ -23,31 +21,10 @@ import (
 	"github.com/ld100/goblet/migrate"
 )
 
-var routes = flag.Bool("routes", false, "Generate router documentation")
-
 func main() {
-	// Create database if not exist
-	database.CreateDB(os.Getenv("DB_NAME"))
+	prepareData()
 
-	// Initiate global ORM var
-	connString := fmt.Sprintf(
-		"host=%v user=%v dbname=%v sslmode=disable password=%v",
-		os.Getenv("DB_HOST"),
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_NAME"),
-		os.Getenv("DB_PASSWORD"),
-	)
-	environment.InitGDB(connString)
-
-	//usermodels.MigrateUsers()
-
-	// Run migrations
-	migrate.Migrate()
-
-	// Run db seed
-	migrate.Seed()
 	fmt.Println("Hello World")
-
 
 	// Setup the logger backend using sirupsen/logrus and configure
 	// it to use a custom JSONFormatter. See the logrus docs for how to
@@ -57,8 +34,6 @@ func main() {
 		// disable, as we set our own
 		DisableTimestamp: true,
 	}
-
-	flag.Parse()
 
 	r := chi.NewRouter()
 
@@ -102,19 +77,29 @@ func main() {
 	// r.Route("/admin", func(r chi.Router) { admin routes here })
 	r.Mount("/admin", adminRouter())
 
-	// Passing -routes to the program will generate docs for the above
-	// router definition. See the `routes.json` file in this folder for
-	// the output.
-	if *routes {
-		// fmt.Println(docgen.JSONRoutesDoc(r))
-		fmt.Println(docgen.MarkdownRoutesDoc(r, docgen.MarkdownOpts{
-			ProjectPath: "github.com/go-chi/chi",
-			Intro:       "Welcome to the chi/_examples/rest generated docs.",
-		}))
-		return
-	}
-
 	http.ListenAndServe(":8080", r)
+}
+
+// Prepare initial data: create db, run migrations and seeds
+func prepareData() {
+	// Create database if not exist
+	database.CreateDB(os.Getenv("DB_NAME"))
+
+	// Initiate global ORM var
+	connString := fmt.Sprintf(
+		"host=%v user=%v dbname=%v sslmode=disable password=%v",
+		os.Getenv("DB_HOST"),
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_NAME"),
+		os.Getenv("DB_PASSWORD"),
+	)
+	environment.InitGDB(connString)
+
+	// Run migrations
+	migrate.Migrate()
+
+	// Run db seed
+	migrate.Seed()
 }
 
 func ListArticles(w http.ResponseWriter, r *http.Request) {
