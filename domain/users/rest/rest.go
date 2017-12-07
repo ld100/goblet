@@ -1,18 +1,20 @@
 package rest
 
 import (
-	"net/http"
 	"context"
+	"encoding/json"
+	"net/http"
 	"strconv"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
 
-	"github.com/ld100/goblet/persistence"
-	"github.com/ld100/goblet/domain/users/service"
-	"github.com/ld100/goblet/domain/users/repository/orm"
-	httperrors "github.com/ld100/goblet/server/rest/errors"
 	models "github.com/ld100/goblet/domain/users"
+	"github.com/ld100/goblet/domain/users/repository/orm"
+	"github.com/ld100/goblet/domain/users/service"
+	"github.com/ld100/goblet/persistence"
+	httperrors "github.com/ld100/goblet/server/rest/errors"
+	"github.com/ld100/goblet/util/log"
 )
 
 func UserRouter() chi.Router {
@@ -68,13 +70,20 @@ func (handler *RESTUserHandler) Update(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value("user").(*models.User)
 
 	data := &UserRequest{User: user}
+
+	jsonErr := json.NewDecoder(r.Body).Decode(data)
+	log.Debug("Custom JSON parsing:", jsonErr)
+
 	if err := render.Bind(r, data); err != nil {
+		log.Debug("Could not map user request to model", err)
 		render.Render(w, r, httperrors.ErrInvalidRequest(err))
 		return
 	}
+
 	user = data.User
 	user, err := handler.UService.Update(user)
 	if err != nil {
+		log.Debug("Could not update user entity")
 		render.Render(w, r, httperrors.ErrInvalidRequest(err))
 		return
 	}

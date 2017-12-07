@@ -8,6 +8,8 @@ import (
 	models "github.com/ld100/goblet/domain/users"
 )
 
+type omit *struct{}
+
 // UserResponse is the response payload for the User data model.
 // See NOTE above in UserRequest as well.
 //
@@ -16,6 +18,9 @@ import (
 // Render is called in top-down order, like a http handler middleware chain.
 type UserResponse struct {
 	*models.User
+
+	// Lets omit password in the response
+	Password omit `json:"password,omitempty"`
 
 	// We add an additional field to the response here.. such as this
 	// elapsed computed property

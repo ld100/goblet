@@ -2,9 +2,9 @@ package rest
 
 import (
 	"net/http"
+	"strings"
 
 	models "github.com/ld100/goblet/domain/users"
-	"strings"
 )
 
 // UserRequest is the request payload for User data model.
@@ -17,14 +17,14 @@ import (
 // in the data model. Also, check out this awesome blog post on struct composition:
 // http://attilaolah.eu/2014/09/10/json-and-struct-composition-in-go/
 type UserRequest struct {
-	User *models.User
+	*models.User
 
-	ProtectedID string `json:"id"` // override 'id' json to have more control
+	//ProtectedID string `json:"id"` // override 'id' json to have more control
 }
 
 func (u *UserRequest) Bind(r *http.Request) error {
 	// just u post-process after u decode..
-	u.ProtectedID = ""                           // unset the protected ID
-	u.User.Email = strings.ToLower(u.User.Email) // as an example, we down-case
+	//u.ProtectedID = ""                 // unset the protected ID
+	u.Email = strings.ToLower(u.Email) // as an example, we down-case
 	return nil
 }

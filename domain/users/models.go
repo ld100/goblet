@@ -17,7 +17,7 @@ type User struct {
 	FirstName string    `gorm:"size:255" valid:"optional" json:"firstName"`          // Default size for string is 255, reset it with this tag
 	LastName  string    `gorm:"size:255" valid:"optional" json:"lastName"`           // Default size for string is 255, reset it with this tag
 	Email     string    `gorm:"not null;unique" valid:"required,email" json:"email"` // Set field as not nullable and unique
-	Password  string    `gorm:"size:255" json:"-"`
+	Password  string    `gorm:"size:255" json:"password"`
 }
 
 // GORM callback: Encode password before create
