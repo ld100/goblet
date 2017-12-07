@@ -25,7 +25,7 @@ func UserRouter() chi.Router {
 	// RESTful routes
 	r := chi.NewRouter()
 	r.Get("/", handler.GetAll)
-	r.Post("/", handler.Store) // POST /articles
+	r.Post("/", handler.Store) // POST /user
 	r.Route("/{userID}", func(r chi.Router) {
 		r.Use(handler.userCtx)        // Load the *User on the request context
 		r.Get("/", handler.GetByID)   // GET /users/123

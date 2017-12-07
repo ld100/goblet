@@ -12,8 +12,6 @@ import (
 	"github.com/pressly/lg"
 
 	"github.com/ld100/goblet/domain/common"
-	"github.com/ld100/goblet/domain/articles"
-	"github.com/ld100/goblet/domain/admin"
 	user "github.com/ld100/goblet/domain/users/rest"
 )
 
@@ -47,13 +45,6 @@ func Serve() {
 
 	// RESTy routes for "users" resource
 	r.Mount("/users", user.UserRouter())
-
-	// RESTy routes for "articles" resource
-	r.Mount("/articles", articles.ArticleRouter())
-
-	// Mount the admin sub-router, which btw is the same as:
-	// r.Route("/admin", func(r chi.Router) { admin routes here })
-	r.Mount("/admin", admin.AdminRouter())
 
 	http.ListenAndServe(":8080", r)
 }

@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-// UserRequest is the request payload for Article data model.
+// UserRequest is the request payload for User data model.
 //
 // NOTE: It's good practice to have well defined request and response payloads
 // so you can manage the specific inputs and outputs for clients, and also gives
