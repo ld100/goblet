@@ -15,7 +15,7 @@ import (
 // then the next field, and so on, all the way down the tree.
 // Render is called in top-down order, like a http handler middleware chain.
 type UserResponse struct {
-	User *models.User
+	*models.User
 
 	// We add an additional field to the response here.. such as this
 	// elapsed computed property
