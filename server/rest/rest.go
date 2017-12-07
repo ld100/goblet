@@ -14,6 +14,7 @@ import (
 	"github.com/ld100/goblet/domain/common"
 	"github.com/ld100/goblet/domain/articles"
 	"github.com/ld100/goblet/domain/admin"
+	user "github.com/ld100/goblet/domain/users/rest"
 )
 
 func Serve() {
@@ -43,6 +44,9 @@ func Serve() {
 	r.Get("/", common.RootController)
 	r.Get("/ping", common.PingController)
 	r.Get("/panic", common.PanicController)
+
+	// RESTy routes for "users" resource
+	r.Mount("/users", user.UserRouter())
 
 	// RESTy routes for "articles" resource
 	r.Mount("/articles", articles.ArticleRouter())

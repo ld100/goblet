@@ -1,4 +1,4 @@
-package repository
+package service
 
 import (
 	"time"
@@ -8,13 +8,13 @@ import (
 )
 
 type UserService interface {
-	//Fetch(cursor string, num int64) ([]*models.User, string, error)
-	GetAll() ([]*models.User, string, error)
-	GetByID(id int64) (*models.User, error)
+	//Fetch(cursor string, num uint) ([]*models.User, string, error)
+	GetAll() ([]*models.User, error)
+	GetByID(id uint) (*models.User, error)
 	GetByEmail(email string) (*models.User, error)
 	Update(u *models.User) (*models.User, error)
 	Store(*models.User) (*models.User, error)
-	Delete(id int64) (bool, error)
+	Delete(id uint) (bool, error)
 }
 
 // Implementation of UserService
@@ -23,10 +23,10 @@ type userService struct {
 }
 
 func (u *userService) GetAll() ([]*models.User, error) {
-	return u.userRepo.GetAll(id)
+	return u.userRepo.GetAll()
 }
 
-func (u *userService) GetByID(id int64) (*models.User, error) {
+func (u *userService) GetByID(id uint) (*models.User, error) {
 	return u.userRepo.GetByID(id)
 }
 
@@ -44,7 +44,7 @@ func (u *userService) Store(user *models.User) (*models.User, error) {
 	// Validation is placed here just for example purpose
 	existingUser, _ := u.GetByEmail(user.Email)
 	if existingUser != nil {
-		return nil, models.CONFLIT_ERROR
+		return nil, models.CONFLICT_ERROR
 	}
 
 	id, err := u.userRepo.Store(user)
@@ -56,7 +56,7 @@ func (u *userService) Store(user *models.User) (*models.User, error) {
 	return user, nil
 }
 
-func (u *userService) Delete(id int64) (bool, error) {
+func (u *userService) Delete(id uint) (bool, error) {
 	existingUser, _ := u.GetByID(id)
 
 	if existingUser == nil {

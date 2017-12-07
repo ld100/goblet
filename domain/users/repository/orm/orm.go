@@ -26,8 +26,8 @@ func (repo *ormUserRepository) GetAll() ([]*models.User, error) {
 	return users, nil
 }
 
-func (repo *ormUserRepository) GetByID(id int64) (*models.User, error) {
-	u := &models.User{Id: id}
+func (repo *ormUserRepository) GetByID(id uint) (*models.User, error) {
+	u := &models.User{ID: id}
 	var errs []error
 	errs = repo.Conn.First(&u, u.ID).GetErrors()
 	if len(errs) > 0 {
@@ -60,7 +60,7 @@ func (repo *ormUserRepository) Update(u *models.User) (*models.User, error) {
 	return u, nil
 }
 
-func (repo *ormUserRepository) Store(u *models.User) (int64, error) {
+func (repo *ormUserRepository) Store(u *models.User) (uint, error) {
 	if repo.Conn.NewRecord(u) {
 		var errs []error
 		errs = repo.Conn.Save(&u).GetErrors()
@@ -73,8 +73,8 @@ func (repo *ormUserRepository) Store(u *models.User) (int64, error) {
 	return u.ID, nil
 }
 
-func (repo *ormUserRepository) Delete(id int64) (bool, error) {
-	u := &models.User{Id: id}
+func (repo *ormUserRepository) Delete(id uint) (bool, error) {
+	u := &models.User{ID: id}
 	if !repo.Conn.NewRecord(u) {
 		var errs []error
 		errs = repo.Conn.Delete(&u).GetErrors()

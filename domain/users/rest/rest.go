@@ -3,13 +3,13 @@ package rest
 import (
 	"net/http"
 	"context"
+	"strconv"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
 
-	"github.com/ld100/goblet/domain/users/persistence"
+	"github.com/ld100/goblet/persistence"
 	"github.com/ld100/goblet/domain/users/service"
-	"github.com/ld100/goblet/domain/users/repository"
 	"github.com/ld100/goblet/domain/users/repository/orm"
 	httperrors "github.com/ld100/goblet/server/rest/errors"
 	models "github.com/ld100/goblet/domain/users"
@@ -18,8 +18,8 @@ import (
 func UserRouter() chi.Router {
 	// Persistence/Data layers wiring
 	dbConn := persistence.GormDB
-	userRepo = orm.NewOrmUserRepository(dbConn)
-	userService = service.NewUserService(userRepo)
+	userRepo := orm.NewOrmUserRepository(dbConn)
+	userService := service.NewUserService(userRepo)
 	handler := &RESTUserHandler{UService: userService}
 
 	// RESTful routes
@@ -73,7 +73,7 @@ func (handler *RESTUserHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	user = data.User
-	user, err := handler.UService.Update(&user)
+	user, err := handler.UService.Update(user)
 	if err != nil {
 		render.Render(w, r, httperrors.ErrInvalidRequest(err))
 		return
@@ -104,9 +104,9 @@ func (handler *RESTUserHandler) Store(w http.ResponseWriter, r *http.Request) {
 func (handler *RESTUserHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value("user").(*models.User)
 
-	deleted, err := handler.UService.Delete(&user.ID)
+	deleted, err := handler.UService.Delete(user.ID)
 	if !deleted {
-		render.Render(w, r, rest.ErrInvalidRequest(err))
+		render.Render(w, r, httperrors.ErrInvalidRequest(err))
 		return
 	}
 
@@ -122,7 +122,9 @@ func (handler *RESTUserHandler) userCtx(next http.Handler) http.Handler {
 		var err error
 
 		if userID := chi.URLParam(r, "userID"); userID != "" {
-			user, err = handler.UService.GetById(userID)
+			// TODO: Check whether userID is integer actually
+			intUserId, _ := strconv.Atoi(userID)
+			user, err = handler.UService.GetByID(uint(intUserId))
 		} else {
 			render.Render(w, r, httperrors.ErrNotFound)
 			return
