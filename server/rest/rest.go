@@ -1,15 +1,16 @@
 package rest
 
 import (
+	"context"
 	"fmt"
 	"net/http"
-	"context"
+	"os"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
-	"github.com/sirupsen/logrus"
 	"github.com/pressly/lg"
+	"github.com/sirupsen/logrus"
 
 	"github.com/ld100/goblet/domain/common"
 	user "github.com/ld100/goblet/domain/users/rest"
@@ -46,7 +47,11 @@ func Serve() {
 	// RESTy routes for "users" resource
 	r.Mount("/users", user.UserRouter())
 
-	http.ListenAndServe(":8080", r)
+	bindIP := ""
+	bindPort := os.Getenv("HTTP_PORT")
+	bindAddr := fmt.Sprintf("%v:%v", bindIP, bindPort)
+
+	http.ListenAndServe(bindAddr, r)
 }
 
 // This is entirely optional, but I wanted to demonstrate how you could easily

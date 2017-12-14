@@ -71,6 +71,8 @@ func (handler *RESTUserHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 	data := &UserRequest{User: user}
 
+	//textbody, _ := strconv.Unquote(r.Body)
+	//jsonErr := json.NewDecoder(textbody).Decode(data)
 	jsonErr := json.NewDecoder(r.Body).Decode(data)
 	log.Debug("Custom JSON parsing:", jsonErr)
 
