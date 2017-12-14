@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	models "github.com/ld100/goblet/domain/users"
+	"github.com/ld100/goblet/domain/users/models"
 )
 
 // UserRequest is the request payload for User data model.

@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-chi/render"
 
-	models "github.com/ld100/goblet/domain/users"
+	"github.com/ld100/goblet/domain/users/models"
 )
 
 type omit *struct{}

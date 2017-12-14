@@ -8,7 +8,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
 
-	models "github.com/ld100/goblet/domain/users"
+	"github.com/ld100/goblet/domain/users/models"
 	"github.com/ld100/goblet/domain/users/repository/orm"
 	"github.com/ld100/goblet/domain/users/service"
 	"github.com/ld100/goblet/persistence"

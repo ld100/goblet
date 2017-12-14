@@ -1,4 +1,4 @@
-package users
+package models
 
 import (
 	"errors"
@@ -21,6 +21,7 @@ type User struct {
 	LastName  string    `gorm:"size:255" valid:"optional" json:"lastName"`           // Default size for string is 255, reset it with this tag
 	Email     string    `gorm:"not null;unique" valid:"required,email" json:"email"` // Set field as not nullable and unique
 	Password  string    `gorm:"size:255" json:"password"`
+	Sessions  []Session `json:"sessions"`
 }
 
 // GORM callback: Encode password before create

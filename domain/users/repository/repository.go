@@ -1,6 +1,6 @@
 package repository
 
-import models "github.com/ld100/goblet/domain/users"
+import "github.com/ld100/goblet/domain/users/models"
 
 type UserRepository interface {
 	//Fetch(cursor string, num int64) ([]*models.User, error)

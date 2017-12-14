@@ -3,8 +3,9 @@ package service
 import (
 	"time"
 
-	models "github.com/ld100/goblet/domain/users"
+	"github.com/ld100/goblet/domain/users/models"
 	"github.com/ld100/goblet/domain/users/repository"
+	usererrors "github.com/ld100/goblet/domain/users/errors"
 )
 
 type UserService interface {
@@ -44,7 +45,7 @@ func (u *userService) Store(user *models.User) (*models.User, error) {
 	// Validation is placed here just for example purpose
 	existingUser, _ := u.GetByEmail(user.Email)
 	if existingUser != nil {
-		return nil, models.CONFLICT_ERROR
+		return nil, usererrors.CONFLICT_ERROR
 	}
 
 	id, err := u.userRepo.Store(user)
@@ -60,7 +61,7 @@ func (u *userService) Delete(id uint) (bool, error) {
 	existingUser, _ := u.GetByID(id)
 
 	if existingUser == nil {
-		return false, models.NOT_FOUND_ERROR
+		return false, usererrors.NOT_FOUND_ERROR
 	}
 
 	return u.userRepo.Delete(id)
