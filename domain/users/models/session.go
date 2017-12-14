@@ -35,3 +35,8 @@ func (s *Session) BeforeCreate() (err error) {
 
 	return
 }
+
+func CleanUpSessions() (err error) {
+	// TODO: Implement method that cleans up all older sessions
+	return nil
+}
