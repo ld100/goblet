@@ -2,7 +2,6 @@ package rest
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 	"strconv"
 
@@ -70,11 +69,6 @@ func (handler *RESTUserHandler) Update(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value("user").(*models.User)
 
 	data := &UserRequest{User: user}
-
-	//textbody, _ := strconv.Unquote(r.Body)
-	//jsonErr := json.NewDecoder(textbody).Decode(data)
-	jsonErr := json.NewDecoder(r.Body).Decode(data)
-	log.Debug("Custom JSON parsing:", jsonErr)
 
 	if err := render.Bind(r, data); err != nil {
 		log.Debug("Could not map user request to model", err)
