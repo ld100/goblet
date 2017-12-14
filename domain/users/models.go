@@ -1,12 +1,13 @@
 package users
 
 import (
-	"time"
 	"errors"
+	"time"
 
-	"golang.org/x/crypto/bcrypt"
 	"github.com/jinzhu/gorm"
+	"golang.org/x/crypto/bcrypt"
 
+	"github.com/ld100/goblet/util/hash"
 	"github.com/ld100/goblet/util/log"
 )
 
@@ -26,6 +27,18 @@ func (u *User) BeforeCreate() (err error) {
 	if err != nil {
 		err = errors.New("cannot hash user password")
 		log.Fatal(err)
+	}
+	return
+}
+
+// Detect if password was set, encode it if needed
+func (u *User) BeforeUpdate() (err error) {
+	if !hash.IsBase64(u.Password) {
+		u.Password, err = HashPassword(u.Password)
+		if err != nil {
+			err = errors.New("cannot hash user password")
+			log.Fatal(err)
+		}
 	}
 	return
 }
