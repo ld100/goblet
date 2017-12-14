@@ -27,6 +27,8 @@ services:
       DB_USER: postgres
       DB_PASSWORD: ''
       DB_NAME: goblet_development
+      SECRET_KEY: '7814aa5476dccd9efa87eaded6968b72d125ae0214b98e2b415820800109b803302d1064a514da3f01ff24841023ca6b5d8c1c9c9d02b496588d07aec6a55c8a'
+      SESSION_TTL_HOURS: 24
     ports:
       - '8080:8080'
       - '8443:8443'
