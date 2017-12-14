@@ -4,11 +4,10 @@ import (
 	"time"
 
 	"github.com/jinzhu/gorm"
-	"gopkg.in/gormigrate.v1"
-
-	"github.com/ld100/goblet/util/log"
-	"github.com/ld100/goblet/persistence"
 	"github.com/ld100/goblet/domain/users"
+	"github.com/ld100/goblet/persistence"
+	"github.com/ld100/goblet/util/log"
+	gormigrate "gopkg.in/gormigrate.v1"
 )
 
 func Migrate() {
@@ -25,6 +24,7 @@ func Migrate() {
 				// so side effects are prevented if the original struct changes during the time
 				type User struct {
 					ID        uint   `gorm:"primary_key"`
+					Uuid      string `gorm:"not null;unique"`
 					CreatedAt time.Time
 					UpdatedAt time.Time
 					FirstName string `gorm:"size:255" valid:"optional"`              // Default size for string is 255, reset it with this tag

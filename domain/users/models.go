@@ -9,10 +9,12 @@ import (
 
 	"github.com/ld100/goblet/util/hash"
 	"github.com/ld100/goblet/util/log"
+	"github.com/ld100/goblet/util/securerandom"
 )
 
 type User struct {
 	ID        uint      `gorm:"primary_key" json:"id"`
+	Uuid      string    `gorm:"not null;unique" json:"uuid"` // Set field as not nullable and unique
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 	FirstName string    `gorm:"size:255" valid:"optional" json:"firstName"`          // Default size for string is 255, reset it with this tag
@@ -23,11 +25,20 @@ type User struct {
 
 // GORM callback: Encode password before create
 func (u *User) BeforeCreate() (err error) {
+	// Hash password
 	u.Password, err = HashPassword(u.Password)
 	if err != nil {
 		err = errors.New("cannot hash user password")
 		log.Fatal(err)
 	}
+
+	// Set UUID for the user
+	u.Uuid, err = securerandom.Uuid()
+	if err != nil {
+		err = errors.New("cannot generate UUID for user")
+		log.Fatal(err)
+	}
+
 	return
 }
 
