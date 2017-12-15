@@ -92,7 +92,7 @@ func (ds *DataSource) CreateDB(name string) {
 		log.Error(err)
 	}
 	defer db.Close()
-	log.Info(ds.DSN())
+	log.Debug(ds.DSN())
 
 	_, err = db.Exec("CREATE DATABASE " + name)
 	if err != nil {

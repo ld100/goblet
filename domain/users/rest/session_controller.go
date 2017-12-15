@@ -121,15 +121,11 @@ func (handler *RESTSessionHandler) Delete(w http.ResponseWriter, r *http.Request
 	var id uint
 	switch v := idValue.(type) {
 	case float64:
-		log.Info("float64")
 		id = uint(int64(v))
 	case int64:
-		log.Info("int64")
 		id = uint(v)
 	default:
 	}
-
-	log.Info("Session ID: ", id)
 
 	deleted, err := handler.SService.Delete(id)
 	if !deleted {

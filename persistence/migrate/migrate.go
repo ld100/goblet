@@ -74,7 +74,7 @@ func Rollback201712141900(tx *gorm.DB) error {
 // Database Seed
 // TODO: Wrap in transactions
 func Seed() {
-	log.Debug("Database seed initiated")
+	//log.Debug("Database seed initiated")
 	user := models.User{
 		FirstName: "Admin",
 		LastName:  "Adminovich",
