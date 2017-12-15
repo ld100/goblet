@@ -13,8 +13,8 @@ import (
 type Session struct {
 	ID        uint      `gorm:"primary_key" json:"id"`
 	Uuid      string    `gorm:"not null;unique" json:"uuid"` // Set field as not nullable and unique
-	UserID    uint      `gorm:"index"`
-	ExpiresAt time.Time `json:"expiresAt"`
+	UserID    uint      `gorm:"index" valid:"required"`
+	ExpiresAt time.Time `json:"expiresAt" valid:"required"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
@@ -42,12 +42,3 @@ func CleanUpSessions() (err error) {
 	// TODO: Implement method that cleans up all older sessions
 	return nil
 }
-
-//JWT claim fields:
-//* userID
-//* userUUID
-//* SessionUUID
-//* email
-//* firstName
-//* lastName
-//* expiresAt

@@ -46,4 +46,13 @@ func ErrRender(err error) render.Renderer {
 	}
 }
 
+func ErrUnauthorized(err error) render.Renderer {
+	return &ErrResponse{
+		Err:            err,
+		HTTPStatusCode: 401,
+		StatusText:     "Unauthorized.",
+		ErrorText:      err.Error(),
+	}
+}
+
 var ErrNotFound = &ErrResponse{HTTPStatusCode: 404, StatusText: "Resource not found."}

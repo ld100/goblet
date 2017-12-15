@@ -28,3 +28,14 @@ func (u *UserRequest) Bind(r *http.Request) error {
 	u.Email = strings.ToLower(u.Email) // as an example, we down-case
 	return nil
 }
+
+type EmailLoginRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+func (er *EmailLoginRequest) Bind(r *http.Request) error {
+	// just u post-process after u decode..
+	er.Email = strings.ToLower(er.Email) // as an example, we down-case
+	return nil
+}

@@ -47,6 +47,9 @@ func Serve() {
 	// RESTy routes for "users" resource
 	r.Mount("/users", user.UserRouter())
 
+	// RESTy routes for "sessions" resource
+	r.Mount("/sessions", user.SessionRouter())
+
 	bindIP := ""
 	bindPort := os.Getenv("HTTP_PORT")
 	bindAddr := fmt.Sprintf("%v:%v", bindIP, bindPort)

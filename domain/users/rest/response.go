@@ -48,3 +48,11 @@ func NewUserListResponse(users []*models.User) []render.Renderer {
 	}
 	return list
 }
+
+type LoginResponse struct {
+	Token string `json:"token,omitempty"`
+}
+
+func (lr *LoginResponse) Render(w http.ResponseWriter, r *http.Request) error {
+	return nil
+}
