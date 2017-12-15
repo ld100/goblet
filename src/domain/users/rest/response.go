@@ -42,7 +42,7 @@ func NewUserResponse(user *models.User) *UserResponse {
 type UserListResponse []*UserResponse
 
 func NewUserListResponse(users []*models.User) []render.Renderer {
-	list := []render.Renderer{}
+	var list []render.Renderer
 	for _, user := range users {
 		list = append(list, NewUserResponse(user))
 	}
