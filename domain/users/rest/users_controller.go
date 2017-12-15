@@ -3,10 +3,12 @@ package rest
 import (
 	"context"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
+	"github.com/go-chi/jwtauth"
 
 	"github.com/ld100/goblet/domain/users/models"
 	"github.com/ld100/goblet/domain/users/repository/orm"
@@ -15,6 +17,10 @@ import (
 	httperrors "github.com/ld100/goblet/server/rest/errors"
 	"github.com/ld100/goblet/util/log"
 )
+
+func init() {
+	tokenAuth = jwtauth.New("HS256", []byte(os.Getenv("SECRET_KEY")), nil)
+}
 
 func UserRouter() chi.Router {
 	// Persistence/Data layers wiring
@@ -28,6 +34,8 @@ func UserRouter() chi.Router {
 	r.Get("/", handler.GetAll)
 	r.Post("/", handler.Store) // POST /user
 	r.Route("/{userID}", func(r chi.Router) {
+		r.Use(jwtauth.Verifier(tokenAuth))
+		r.Use(jwtauth.Authenticator)
 		r.Use(handler.userCtx)        // Load the *User on the request context
 		r.Get("/", handler.GetByID)   // GET /users/123
 		r.Put("/", handler.Update)    // PUT /users/123
