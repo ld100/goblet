@@ -11,3 +11,11 @@ type UserRepository interface {
 	Store(u *models.User) (uint, error)
 	Delete(id uint) (bool, error)
 }
+
+type SessionRepository interface {
+	GetAllByUser(u *models.User) ([]*models.Session, error)
+	GetByID(id uint) (*models.Session, error)
+	GetByUuid(uuid string) (*models.Session, error)
+	Store(s *models.Session) (uint, error)
+	Delete(id uint) (bool, error)
+}

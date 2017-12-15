@@ -18,7 +18,7 @@ type UserService interface {
 	Delete(id uint) (bool, error)
 }
 
-// Implementation of UserService
+// Implementation of SessionService
 type userService struct {
 	userRepo repository.UserRepository
 }

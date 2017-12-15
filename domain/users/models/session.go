@@ -27,10 +27,12 @@ func (s Session) Validate(db *gorm.DB) {
 
 func (s *Session) BeforeCreate() (err error) {
 	// Set UUID for the user
-	s.Uuid, err = securerandom.Uuid()
-	if err != nil {
-		err = errors.New("cannot generate UUID for session")
-		log.Fatal(err)
+	if len(s.Uuid) == 0 {
+		s.Uuid, err = securerandom.Uuid()
+		if err != nil {
+			err = errors.New("cannot generate UUID for session")
+			log.Fatal(err)
+		}
 	}
 
 	return
@@ -40,3 +42,12 @@ func CleanUpSessions() (err error) {
 	// TODO: Implement method that cleans up all older sessions
 	return nil
 }
+
+//JWT claim fields:
+//* userID
+//* userUUID
+//* SessionUUID
+//* email
+//* firstName
+//* lastName
+//* expiresAt
