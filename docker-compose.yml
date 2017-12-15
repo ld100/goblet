@@ -13,7 +13,7 @@ services:
   app:
     build: .
     volumes:
-      - ${PWD-.}:/go/src/github.com/ld100/goblet
+      - ${PWD-.}/src:/go/src/github.com/ld100/goblet
     working_dir: /go/src/github.com/ld100/goblet
     command: go run main.go
     links:

@@ -8,7 +8,7 @@ ENV BUILDDIR /app
 # build directories
 RUN mkdir -p $BUILDDIR
 RUN mkdir -p $WORKDIR
-ADD . $WORKDIR
+ADD src $WORKDIR
 WORKDIR $WORKDIR
 # COPY Gopkg.toml Gopkg.lock ./
 

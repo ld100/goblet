@@ -15,6 +15,7 @@
 
 # Exclude vendor dir
 vendor/*
+src/vendor/*
 
 # dep-related
 Gopkg.lock
