@@ -7,7 +7,8 @@ services:
       - ${PWD-.}/postgres-data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
-      PGDATA: /tmp
+      # PGDATA: /tmp
+      PGDATA: '/var/lib/postgresql/data'
     ports:
       - '5432:5432'
   app:
@@ -32,6 +33,9 @@ services:
     ports:
       - '8080:8080'
       - '8443:8443'
+    depends_on:
+     - postgres
+
   prometheus:
     image: prom/prometheus
     volumes:
