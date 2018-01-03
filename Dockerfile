@@ -5,23 +5,27 @@ ENV GOBIN /go/bin
 ENV WORKDIR /go/src/github.com/ld100/goblet
 ENV BUILDDIR /app
 
-# build directories
-RUN mkdir -p $BUILDDIR
-RUN mkdir -p $WORKDIR
-ADD src $WORKDIR
-WORKDIR $WORKDIR
-# COPY Gopkg.toml Gopkg.lock ./
-
 # Install dependencies
 RUN apk --update add git
 
-# Install dependency manager
+# Install Golang's dependency manager
 RUN go-wrapper download -u github.com/golang/dep/cmd/dep \
     && go-wrapper install github.com/golang/dep/cmd/dep
     # && rm -rf /usr/lib/go /go/src /go/pkg /var/cache/*
 
+
+# Set project directories
+RUN mkdir -p $BUILDDIR
+RUN mkdir -p $WORKDIR
+ADD src $WORKDIR
+WORKDIR $WORKDIR
+
+# Copies the Gopkg.toml and Gopkg.lock to WORKDIR
+COPY src/Gopkg.toml src/Gopkg.lock ./
+
 # Get dependencies
-RUN dep ensure -v
+# install the dependencies without checking for go code
+RUN dep ensure -vendor-only
 #RUN dep ensure
 
 EXPOSE 8080

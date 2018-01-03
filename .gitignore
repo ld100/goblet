@@ -15,10 +15,10 @@
 
 # Exclude vendor dir
 vendor/*
-src/vendor/*
+#src/vendor/*
 
 # dep-related
-Gopkg.lock
+#Gopkg.lock
 
 # GoLand
 .idea/
