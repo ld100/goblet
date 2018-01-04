@@ -17,8 +17,6 @@ services:
       - ${PWD-.}/src:/go/src/github.com/ld100/goblet
     working_dir: /go/src/github.com/ld100/goblet
     command: go run main.go
-    links:
-      - postgres
     environment:
       REDIS_URL: redis:6379
       APP_ENV: development
@@ -33,6 +31,8 @@ services:
     ports:
       - '8080:8080'
       - '8443:8443'
+    links:
+      - postgres
     depends_on:
      - postgres
 
@@ -44,11 +44,13 @@ services:
      - 9090:9090
     depends_on:
      - exporter
+
   exporter:
     image: prom/node-exporter:latest
     ports:
      - "9100:9100"
 #    network_mode: host
+
   grafana:
     image: grafana/grafana
     environment:
