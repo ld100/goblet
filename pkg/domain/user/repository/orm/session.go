@@ -6,9 +6,9 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	_ "github.com/lib/pq"
 
-	usererrors "github.com/ld100/goblet/pkg/domain/users/errors"
-	"github.com/ld100/goblet/pkg/domain/users/models"
-	"github.com/ld100/goblet/pkg/domain/users/repository"
+	usererrors "github.com/ld100/goblet/pkg/domain/user/error"
+	"github.com/ld100/goblet/pkg/domain/user/model"
+	"github.com/ld100/goblet/pkg/domain/user/repository"
 	"github.com/ld100/goblet/pkg/util/log"
 )
 
@@ -16,8 +16,8 @@ type ormSessionRepository struct {
 	Conn *gorm.DB
 }
 
-func (repo *ormSessionRepository) GetAllByUser(u *models.User) ([]*models.Session, error) {
-	var sessions []*models.Session
+func (repo *ormSessionRepository) GetAllByUser(u *model.User) ([]*model.Session, error) {
+	var sessions []*model.Session
 	var errs []error
 
 	//errs = repo.Conn.Model(&u).Association("Sessions").Find(&sessions).GetErrors()
@@ -29,8 +29,8 @@ func (repo *ormSessionRepository) GetAllByUser(u *models.User) ([]*models.Sessio
 	return sessions, nil
 }
 
-func (repo *ormSessionRepository) GetByID(id uint) (*models.Session, error) {
-	s := &models.Session{ID: id}
+func (repo *ormSessionRepository) GetByID(id uint) (*model.Session, error) {
+	s := &model.Session{ID: id}
 	var errs []error
 	errs = repo.Conn.First(&s, s.ID).GetErrors()
 	if len(errs) > 0 {
@@ -41,8 +41,8 @@ func (repo *ormSessionRepository) GetByID(id uint) (*models.Session, error) {
 	return s, nil
 }
 
-func (repo *ormSessionRepository) GetByUuid(uuid string) (*models.Session, error) {
-	s := &models.Session{Uuid: uuid}
+func (repo *ormSessionRepository) GetByUuid(uuid string) (*model.Session, error) {
+	s := &model.Session{Uuid: uuid}
 	var errs []error
 	errs = repo.Conn.Where("uuid = ?", s.Uuid).First(&s).GetErrors()
 	if len(errs) > 0 {
@@ -53,7 +53,7 @@ func (repo *ormSessionRepository) GetByUuid(uuid string) (*models.Session, error
 
 }
 
-func (repo *ormSessionRepository) Store(s *models.Session) (uint, error) {
+func (repo *ormSessionRepository) Store(s *model.Session) (uint, error) {
 	if repo.Conn.NewRecord(s) {
 		var errs []error
 		errs = repo.Conn.Save(&s).GetErrors()
@@ -67,7 +67,7 @@ func (repo *ormSessionRepository) Store(s *models.Session) (uint, error) {
 }
 
 func (repo *ormSessionRepository) Delete(id uint) (bool, error) {
-	s := &models.Session{ID: id}
+	s := &model.Session{ID: id}
 	if !repo.Conn.NewRecord(s) {
 		var errs []error
 		errs = repo.Conn.Delete(&s).GetErrors()

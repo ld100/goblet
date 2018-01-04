@@ -6,9 +6,9 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	_ "github.com/lib/pq"
 
-	usererrors "github.com/ld100/goblet/pkg/domain/users/errors"
-	"github.com/ld100/goblet/pkg/domain/users/models"
-	"github.com/ld100/goblet/pkg/domain/users/repository"
+	usererrors "github.com/ld100/goblet/pkg/domain/user/error"
+	"github.com/ld100/goblet/pkg/domain/user/model"
+	"github.com/ld100/goblet/pkg/domain/user/repository"
 	"github.com/ld100/goblet/pkg/util/log"
 )
 
@@ -16,8 +16,8 @@ type ormUserRepository struct {
 	Conn *gorm.DB
 }
 
-func (repo *ormUserRepository) GetAll() ([]*models.User, error) {
-	var users []*models.User
+func (repo *ormUserRepository) GetAll() ([]*model.User, error) {
+	var users []*model.User
 	var errs []error
 	errs = repo.Conn.Find(&users).GetErrors()
 	if len(errs) > 0 {
@@ -27,8 +27,8 @@ func (repo *ormUserRepository) GetAll() ([]*models.User, error) {
 	return users, nil
 }
 
-func (repo *ormUserRepository) GetByID(id uint) (*models.User, error) {
-	u := &models.User{ID: id}
+func (repo *ormUserRepository) GetByID(id uint) (*model.User, error) {
+	u := &model.User{ID: id}
 	var errs []error
 	errs = repo.Conn.First(&u, u.ID).GetErrors()
 	if len(errs) > 0 {
@@ -39,8 +39,8 @@ func (repo *ormUserRepository) GetByID(id uint) (*models.User, error) {
 	return u, nil
 }
 
-func (repo *ormUserRepository) GetByEmail(email string) (*models.User, error) {
-	u := &models.User{Email: email}
+func (repo *ormUserRepository) GetByEmail(email string) (*model.User, error) {
+	u := &model.User{Email: email}
 	var errs []error
 	errs = repo.Conn.Where("email = ?", u.Email).First(&u).GetErrors()
 	if len(errs) > 0 {
@@ -51,7 +51,7 @@ func (repo *ormUserRepository) GetByEmail(email string) (*models.User, error) {
 
 }
 
-func (repo *ormUserRepository) Update(u *models.User) (*models.User, error) {
+func (repo *ormUserRepository) Update(u *model.User) (*model.User, error) {
 	var errs []error
 	errs = repo.Conn.Save(&u).GetErrors()
 	if len(errs) > 0 {
@@ -61,7 +61,7 @@ func (repo *ormUserRepository) Update(u *models.User) (*models.User, error) {
 	return u, nil
 }
 
-func (repo *ormUserRepository) Store(u *models.User) (uint, error) {
+func (repo *ormUserRepository) Store(u *model.User) (uint, error) {
 	if repo.Conn.NewRecord(u) {
 		var errs []error
 		errs = repo.Conn.Save(&u).GetErrors()
@@ -75,7 +75,7 @@ func (repo *ormUserRepository) Store(u *models.User) (uint, error) {
 }
 
 func (repo *ormUserRepository) Delete(id uint) (bool, error) {
-	u := &models.User{ID: id}
+	u := &model.User{ID: id}
 	if !repo.Conn.NewRecord(u) {
 		var errs []error
 		errs = repo.Conn.Delete(&u).GetErrors()

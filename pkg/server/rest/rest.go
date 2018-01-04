@@ -13,7 +13,7 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/ld100/goblet/pkg/domain/common"
-	user "github.com/ld100/goblet/pkg/domain/users/rest"
+	user "github.com/ld100/goblet/pkg/domain/user/rest"
 )
 
 func Serve() {
@@ -44,8 +44,8 @@ func Serve() {
 	r.Get("/ping", common.PingController)
 	r.Get("/panic", common.PanicController)
 
-	// RESTy routes for "users" resource
-	r.Mount("/users", user.UserRouter())
+	// RESTy routes for "user" resource
+	r.Mount("/user", user.UserRouter())
 
 	// RESTy routes for "sessions" resource
 	r.Mount("/sessions", user.SessionRouter())

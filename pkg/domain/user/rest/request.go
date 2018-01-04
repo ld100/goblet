@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/ld100/goblet/pkg/domain/users/models"
+	"github.com/ld100/goblet/pkg/domain/user/model"
 )
 
 // UserRequest is the request payload for User data model.
@@ -17,7 +17,7 @@ import (
 // in the data model. Also, check out this awesome blog post on struct composition:
 // http://attilaolah.eu/2014/09/10/json-and-struct-composition-in-go/
 type UserRequest struct {
-	*models.User
+	*model.User
 
 	//ProtectedID string `json:"id"` // override 'id' json to have more control
 }

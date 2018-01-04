@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-chi/render"
 
-	"github.com/ld100/goblet/pkg/domain/users/models"
+	"github.com/ld100/goblet/pkg/domain/user/model"
 )
 
 type omit *struct{}
@@ -17,7 +17,7 @@ type omit *struct{}
 // then the next field, and so on, all the way down the tree.
 // Render is called in top-down order, like a http handler middleware chain.
 type UserResponse struct {
-	*models.User
+	*model.User
 
 	// Lets omit password in the response
 	Password omit `json:"password,omitempty"`
@@ -33,7 +33,7 @@ func (ur *UserResponse) Render(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func NewUserResponse(user *models.User) *UserResponse {
+func NewUserResponse(user *model.User) *UserResponse {
 	resp := &UserResponse{User: user}
 	// Could attach any shit to our payload here
 	return resp
@@ -41,7 +41,7 @@ func NewUserResponse(user *models.User) *UserResponse {
 
 type UserListResponse []*UserResponse
 
-func NewUserListResponse(users []*models.User) []render.Renderer {
+func NewUserListResponse(users []*model.User) []render.Renderer {
 	var list []render.Renderer
 	for _, user := range users {
 		list = append(list, NewUserResponse(user))

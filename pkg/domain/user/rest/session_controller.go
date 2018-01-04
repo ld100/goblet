@@ -11,11 +11,11 @@ import (
 	"github.com/go-chi/jwtauth"
 	"github.com/go-chi/render"
 
-	"github.com/ld100/goblet/pkg/domain/users/models"
-	"github.com/ld100/goblet/pkg/domain/users/repository/orm"
-	"github.com/ld100/goblet/pkg/domain/users/service"
+	"github.com/ld100/goblet/pkg/domain/user/model"
+	"github.com/ld100/goblet/pkg/domain/user/repository/orm"
+	"github.com/ld100/goblet/pkg/domain/user/service"
 	"github.com/ld100/goblet/pkg/persistence"
-	httperrors "github.com/ld100/goblet/pkg/server/rest/errors"
+	httperrors "github.com/ld100/goblet/pkg/server/rest/error"
 	"github.com/ld100/goblet/pkg/util/log"
 )
 
@@ -76,7 +76,7 @@ func (handler *RESTSessionHandler) Store(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	if !models.CheckPasswordHash(data.Password, user.Password) {
+	if !model.CheckPasswordHash(data.Password, user.Password) {
 		err := errors.New("provided password is wrong")
 		render.Render(w, r, httperrors.ErrUnauthorized(err))
 		return
@@ -84,7 +84,7 @@ func (handler *RESTSessionHandler) Store(w http.ResponseWriter, r *http.Request)
 
 	hours, _ := strconv.Atoi(os.Getenv("SESSION_TTL_HOURS"))
 	hoursDuration := time.Duration(hours)
-	session := &models.Session{
+	session := &model.Session{
 		UserID:    user.ID,
 		ExpiresAt: time.Now().Add(hoursDuration * time.Hour),
 	}

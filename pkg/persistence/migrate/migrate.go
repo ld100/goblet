@@ -6,7 +6,7 @@ import (
 	"github.com/jinzhu/gorm"
 	gormigrate "gopkg.in/gormigrate.v1"
 
-	"github.com/ld100/goblet/pkg/domain/users/models"
+	"github.com/ld100/goblet/pkg/domain/user/model"
 	"github.com/ld100/goblet/pkg/persistence"
 	"github.com/ld100/goblet/pkg/util/log"
 )
@@ -53,7 +53,7 @@ func Migrate201712051642(tx *gorm.DB) error {
 }
 
 func Rollback201712051642(tx *gorm.DB) error {
-	return tx.DropTable("users").Error
+	return tx.DropTable("user").Error
 }
 
 func Migrate201712141900(tx *gorm.DB) error {
@@ -76,7 +76,7 @@ func Rollback201712141900(tx *gorm.DB) error {
 // TODO: Wrap in transactions
 func Seed() {
 	//log.Debug("Database seed initiated")
-	user := models.User{
+	user := model.User{
 		FirstName: "Admin",
 		LastName:  "Adminovich",
 		Email:     "robot@example.com",

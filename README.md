@@ -12,12 +12,12 @@ Go code consists of common use packages and domain-specific ones. Common use pac
 
 `pkg/domain` includes domain-specific packages, e.g. users, orders, articles. Each domain package may consist of the following parts:
 
-* models − models structs with JSON/YAML/XML serialization instructions. Usually model is a GORM db model with validations.
-* services − Service layer AKA Commands AKA Logic
+* model − models structs with JSON/YAML/XML serialization instructions. Usually model is a GORM db model with validations.
+* service − Service layer AKA Commands AKA Logic
 * rest − REST-specific routes controllers, middlewares. Uses CHI framework.
 * grpc − gRPC-specific controllers and middlewares.
-* forms − forms and form validators
-* errors − just typed errors
+* form − forms and form validators
+* error − just typed errors
 
 
 `pkg/util` packages consists of many (not always related) subpackages:

@@ -1,16 +1,16 @@
 package service
 
 import (
-	usererrors "github.com/ld100/goblet/pkg/domain/users/errors"
-	"github.com/ld100/goblet/pkg/domain/users/models"
-	"github.com/ld100/goblet/pkg/domain/users/repository"
+	usererrors "github.com/ld100/goblet/pkg/domain/user/error"
+	"github.com/ld100/goblet/pkg/domain/user/model"
+	"github.com/ld100/goblet/pkg/domain/user/repository"
 )
 
 type SessionService interface {
-	GetAllByUser(u *models.User) ([]*models.Session, error)
-	GetByID(id uint) (*models.Session, error)
-	GetByUuid(uuid string) (*models.Session, error)
-	Store(*models.Session) (*models.Session, error)
+	GetAllByUser(u *model.User) ([]*model.Session, error)
+	GetByID(id uint) (*model.Session, error)
+	GetByUuid(uuid string) (*model.Session, error)
+	Store(*model.Session) (*model.Session, error)
 	Delete(id uint) (bool, error)
 }
 
@@ -19,19 +19,19 @@ type sessionService struct {
 	sessionRepo repository.SessionRepository
 }
 
-func (s *sessionService) GetAllByUser(u *models.User) ([]*models.Session, error) {
+func (s *sessionService) GetAllByUser(u *model.User) ([]*model.Session, error) {
 	return s.sessionRepo.GetAllByUser(u)
 }
 
-func (s *sessionService) GetByID(id uint) (*models.Session, error) {
+func (s *sessionService) GetByID(id uint) (*model.Session, error) {
 	return s.sessionRepo.GetByID(id)
 }
 
-func (s *sessionService) GetByUuid(uuid string) (*models.Session, error) {
+func (s *sessionService) GetByUuid(uuid string) (*model.Session, error) {
 	return s.sessionRepo.GetByUuid(uuid)
 }
 
-func (s *sessionService) Store(session *models.Session) (*models.Session, error) {
+func (s *sessionService) Store(session *model.Session) (*model.Session, error) {
 	id, err := s.sessionRepo.Store(session)
 	if err != nil {
 		return nil, err

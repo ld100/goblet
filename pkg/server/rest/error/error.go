@@ -1,4 +1,4 @@
-package errors
+package error
 
 import (
 	"github.com/go-chi/render"
@@ -9,9 +9,9 @@ import (
 // Error response payloads & renderers
 //--
 
-// ErrResponse renderer type for handling all sorts of errors.
+// ErrResponse renderer type for handling all sorts of error.
 //
-// In the best case scenario, the excellent github.com/pkg/errors package
+// In the best case scenario, the excellent github.com/pkg/error package
 // helps reveal information on the error, setting it on Err, and in the Render()
 // method, using it to set the application-specific error code in AppCode.
 type ErrResponse struct {

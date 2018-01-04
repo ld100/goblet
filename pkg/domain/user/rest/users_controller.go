@@ -10,11 +10,11 @@ import (
 	"github.com/go-chi/jwtauth"
 	"github.com/go-chi/render"
 
-	"github.com/ld100/goblet/pkg/domain/users/models"
-	"github.com/ld100/goblet/pkg/domain/users/repository/orm"
-	"github.com/ld100/goblet/pkg/domain/users/service"
+	"github.com/ld100/goblet/pkg/domain/user/model"
+	"github.com/ld100/goblet/pkg/domain/user/repository/orm"
+	"github.com/ld100/goblet/pkg/domain/user/service"
 	"github.com/ld100/goblet/pkg/persistence"
-	httperrors "github.com/ld100/goblet/pkg/server/rest/errors"
+	httperrors "github.com/ld100/goblet/pkg/server/rest/error"
 	"github.com/ld100/goblet/pkg/util/log"
 )
 
@@ -37,9 +37,9 @@ func UserRouter() chi.Router {
 		r.Use(jwtauth.Verifier(tokenAuth))
 		r.Use(jwtauth.Authenticator)
 		r.Use(handler.userCtx)        // Load the *User on the request context
-		r.Get("/", handler.GetByID)   // GET /users/123
-		r.Put("/", handler.Update)    // PUT /users/123
-		r.Delete("/", handler.Delete) // DELETE /users/123
+		r.Get("/", handler.GetByID)   // GET /user/123
+		r.Put("/", handler.Update)    // PUT /user/123
+		r.Delete("/", handler.Delete) // DELETE /user/123
 	})
 	return r
 }
@@ -52,7 +52,7 @@ func (handler *RESTUserHandler) GetByID(w http.ResponseWriter, r *http.Request) 
 	// Assume if we've reach this far, we can access the user
 	// context because this handler is a child of the userCtx
 	// middleware. The worst case, the recoverer middleware will save us.
-	user := r.Context().Value("user").(*models.User)
+	user := r.Context().Value("user").(*model.User)
 
 	if err := render.Render(w, r, NewUserResponse(user)); err != nil {
 		render.Render(w, r, httperrors.ErrRender(err))
@@ -74,7 +74,7 @@ func (handler *RESTUserHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func (handler *RESTUserHandler) Update(w http.ResponseWriter, r *http.Request) {
-	user := r.Context().Value("user").(*models.User)
+	user := r.Context().Value("user").(*model.User)
 
 	data := &UserRequest{User: user}
 
@@ -115,7 +115,7 @@ func (handler *RESTUserHandler) Store(w http.ResponseWriter, r *http.Request) {
 }
 
 func (handler *RESTUserHandler) Delete(w http.ResponseWriter, r *http.Request) {
-	user := r.Context().Value("user").(*models.User)
+	user := r.Context().Value("user").(*model.User)
 
 	deleted, err := handler.UService.Delete(user.ID)
 	if !deleted {
@@ -131,7 +131,7 @@ func (handler *RESTUserHandler) Delete(w http.ResponseWriter, r *http.Request) {
 // the User could not be found, we stop here and return a 404.
 func (handler *RESTUserHandler) userCtx(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		var user *models.User
+		var user *model.User
 		var err error
 
 		if userID := chi.URLParam(r, "userID"); userID != "" {

@@ -3,18 +3,18 @@ package service
 import (
 	"time"
 
-	usererrors "github.com/ld100/goblet/pkg/domain/users/errors"
-	"github.com/ld100/goblet/pkg/domain/users/models"
-	"github.com/ld100/goblet/pkg/domain/users/repository"
+	usererrors "github.com/ld100/goblet/pkg/domain/user/error"
+	"github.com/ld100/goblet/pkg/domain/user/model"
+	"github.com/ld100/goblet/pkg/domain/user/repository"
 )
 
 type UserService interface {
-	//Fetch(cursor string, num uint) ([]*models.User, string, error)
-	GetAll() ([]*models.User, error)
-	GetByID(id uint) (*models.User, error)
-	GetByEmail(email string) (*models.User, error)
-	Update(u *models.User) (*models.User, error)
-	Store(*models.User) (*models.User, error)
+	//Fetch(cursor string, num uint) ([]*model.User, string, error)
+	GetAll() ([]*model.User, error)
+	GetByID(id uint) (*model.User, error)
+	GetByEmail(email string) (*model.User, error)
+	Update(u *model.User) (*model.User, error)
+	Store(*model.User) (*model.User, error)
 	Delete(id uint) (bool, error)
 }
 
@@ -23,24 +23,24 @@ type userService struct {
 	userRepo repository.UserRepository
 }
 
-func (u *userService) GetAll() ([]*models.User, error) {
+func (u *userService) GetAll() ([]*model.User, error) {
 	return u.userRepo.GetAll()
 }
 
-func (u *userService) GetByID(id uint) (*models.User, error) {
+func (u *userService) GetByID(id uint) (*model.User, error) {
 	return u.userRepo.GetByID(id)
 }
 
-func (u *userService) Update(user *models.User) (*models.User, error) {
+func (u *userService) Update(user *model.User) (*model.User, error) {
 	user.UpdatedAt = time.Now()
 	return u.userRepo.Update(user)
 }
 
-func (u *userService) GetByEmail(email string) (*models.User, error) {
+func (u *userService) GetByEmail(email string) (*model.User, error) {
 	return u.userRepo.GetByEmail(email)
 }
 
-func (u *userService) Store(user *models.User) (*models.User, error) {
+func (u *userService) Store(user *model.User) (*model.User, error) {
 	// NOTE: this validation is excessive, since already done by model/ORM itself
 	// Validation is placed here just for example purpose
 	existingUser, _ := u.GetByEmail(user.Email)
