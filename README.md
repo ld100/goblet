@@ -6,11 +6,11 @@ Application consists of configuration and Golang code. Configuration is concentr
 Go code consists of common use packages and domain-specific ones. Common use packages are:
 
 * cmd − command-line tools
-* server − entry point for server-related code. Consists of REST and gRPC servers and its tools (utils, error handlers).
-* persistence − database & ORM handlers, database setup, migration & seed operations.
-* util − project-wide utility code, including database, cryptography, data migration, environment, etc
+* pkg/server − entry point for server-related code. Consists of REST and gRPC servers and its tools (utils, error handlers).
+* pkg/persistence − database & ORM handlers, database setup, migration & seed operations.
+* pkg/util − project-wide utility code, including database, cryptography, data migration, environment, etc
 
-`domain` includes domain-specific packages, e.g. users, orders, articles. Each domain package may consist of the following parts:
+`pkg/domain` includes domain-specific packages, e.g. users, orders, articles. Each domain package may consist of the following parts:
 
 * models − models structs with JSON/YAML/XML serialization instructions. Usually model is a GORM db model with validations.
 * services − Service layer AKA Commands AKA Logic
@@ -20,7 +20,7 @@ Go code consists of common use packages and domain-specific ones. Common use pac
 * errors − just typed errors
 
 
-`util` packages consists of many (not always related) subpackages:
+`pkg/util` packages consists of many (not always related) subpackages:
 
 * hash − different hash utils, for example base64 operations.
 * log − Logrus library wrapper to be used in all parts of the app for logging.

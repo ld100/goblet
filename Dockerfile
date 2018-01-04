@@ -17,11 +17,11 @@ RUN go-wrapper download -u github.com/golang/dep/cmd/dep \
 # Set project directories
 RUN mkdir -p $BUILDDIR
 RUN mkdir -p $WORKDIR
-ADD src $WORKDIR
+ADD . $WORKDIR/
 WORKDIR $WORKDIR
 
 # Copies the Gopkg.toml and Gopkg.lock to WORKDIR
-COPY src/Gopkg.toml src/Gopkg.lock ./
+COPY Gopkg.toml Gopkg.lock ./
 
 # Get dependencies
 # install the dependencies without checking for go code

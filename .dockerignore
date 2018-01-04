@@ -1,6 +1,6 @@
 bundles
-.gopath
-#vendor/pkg
+# .gopath
+# vendor/pkg
 .go-pkg-cache
 .git
 .idea/
@@ -8,3 +8,5 @@ bundles
 # Local data storage
 grafana-data/
 postgres-data/
+config/
+

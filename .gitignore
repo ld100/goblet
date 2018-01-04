@@ -14,8 +14,7 @@
 .glide/
 
 # Exclude vendor dir
-vendor/*
-#src/vendor/*
+# vendor/*
 
 # dep-related
 #Gopkg.lock

@@ -14,9 +14,9 @@ services:
   app:
     build: .
     volumes:
-      - ${PWD-.}/src:/go/src/github.com/ld100/goblet
+      - ${PWD-.}/:/go/src/github.com/ld100/goblet
     working_dir: /go/src/github.com/ld100/goblet
-    command: go run main.go
+    command: go run cmd/gobletsrv/main.go
     environment:
       REDIS_URL: redis:6379
       APP_ENV: development
