@@ -52,12 +52,12 @@ func Serve() {
 	// RESTy routes for "sessions" resource
 	r.Mount("/sessions", user.SessionRouter())
 
+	// Prometheus instrumentation handler
+	r.Handle("/metrics", promhttp.Handler())
+
 	bindIP := ""
 	bindPort := os.Getenv("HTTP_PORT")
 	bindAddr := fmt.Sprintf("%v:%v", bindIP, bindPort)
-
-	// Prometheus instrumentation handler
-	http.Handle("/metrics", promhttp.Handler())
 
 	http.ListenAndServe(bindAddr, r)
 }

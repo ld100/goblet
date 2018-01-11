@@ -2,15 +2,15 @@ version: "2.1"
 
 services:
   postgres:
-    image: 'postgres:alpine'
+    image: "postgres:alpine"
     volumes:
       - ${PWD-.}/data/postgres:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
       PGDATA: /tmp
-      # PGDATA: '/var/lib/postgresql/data'
+      # PGDATA: "/var/lib/postgresql/data"
     ports:
-      - '5432:5432'
+      - "5432:5432"
   app:
     build: .
     volumes:
@@ -24,20 +24,20 @@ services:
       DB_HOST: postgres
       DB_PORT: 5432
       DB_USER: postgres
-      DB_PASSWORD: ''
+      DB_PASSWORD: ""
       DB_NAME: goblet_development
       REDIS_URL: redis:6379
-      SECRET_KEY: '7814aa5476dccd9efa87eaded6968b72d125ae0214b98e2b415820800109b803302d1064a514da3f01ff24841023ca6b5d8c1c9c9d02b496588d07aec6a55c8a'
+      SECRET_KEY: "7814aa5476dccd9efa87eaded6968b72d125ae0214b98e2b415820800109b803302d1064a514da3f01ff24841023ca6b5d8c1c9c9d02b496588d07aec6a55c8a"
       SESSION_TTL_HOURS: 24
-      LOGSTASH_ENABLED: 'true'
+      LOGSTASH_ENABLED: "true"
       LOGSTASH_HOST: logstash
       LOGSTASH_PORT: 5000
-      PROMETHEUS_ENABLED: 'true'
+      PROMETHEUS_ENABLED: "true"
       PROMETHEUS_HOST: prometheus
       PROMETHEUS_PORT: 9090
     ports:
-      - '8080:8080'
-      - '8443:8443'
+      - "8080:8080"
+      - "8443:8443"
     links:
       - postgres
     depends_on:
@@ -56,13 +56,13 @@ services:
      - exporter
 
   exporter:
-    image: prom/node-exporter:latest
+    image: "prom/node-exporter:latest"
     ports:
      - "9100:9100"
 #    network_mode: host
 
   grafana:
-    image: grafana/grafana
+    image: "grafana/grafana"
     environment:
       GF_SECURITY_ADMIN_PASSWORD: secret
     volumes:
@@ -73,7 +73,7 @@ services:
       - prometheus
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.1.0
+    image: "docker.elastic.co/elasticsearch/elasticsearch-oss:6.1.0"
     volumes:
       - ${PWD-.}/config/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
       # - ${PWD-.}/data/elasticsearch:/usr/share/elasticsearch/data
@@ -84,7 +84,7 @@ services:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
 
   logstash:
-    image: docker.elastic.co/logstash/logstash-oss:6.1.0
+    image: "docker.elastic.co/logstash/logstash-oss:6.1.0"
     volumes:
       - ${PWD-.}/config/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
       - ${PWD-.}/config/logstash/pipeline:/usr/share/logstash/pipeline:ro
@@ -96,7 +96,7 @@ services:
       - elasticsearch
 
   kibana:
-    image: docker.elastic.co/kibana/kibana-oss:6.1.0
+    image: "docker.elastic.co/kibana/kibana-oss:6.1.0"
     volumes:
       - ${PWD-.}/config/kibana/config/:/usr/share/kibana/config:ro
     ports:
