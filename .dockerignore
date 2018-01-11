@@ -6,7 +6,6 @@ bundles
 .idea/
 
 # Local data storage
-grafana-data/
-postgres-data/
+data/
 config/
 
