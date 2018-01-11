@@ -11,6 +11,8 @@ import (
 	"github.com/go-chi/render"
 	"github.com/pressly/lg"
 	"github.com/sirupsen/logrus"
+	// "github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/ld100/goblet/pkg/domain/common"
 	user "github.com/ld100/goblet/pkg/domain/user/rest"
@@ -53,6 +55,9 @@ func Serve() {
 	bindIP := ""
 	bindPort := os.Getenv("HTTP_PORT")
 	bindAddr := fmt.Sprintf("%v:%v", bindIP, bindPort)
+
+	// Prometheus instrumentation handler
+	http.Handle("/metrics", promhttp.Handler())
 
 	http.ListenAndServe(bindAddr, r)
 }

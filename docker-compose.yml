@@ -46,6 +46,7 @@ services:
     image: prom/prometheus
     volumes:
      - ${PWD-.}/config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+     # - ${PWD-.}/data/prometheus:/prometheus
     ports:
      - 9090:9090
     depends_on:
