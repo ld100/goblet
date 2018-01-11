@@ -9,7 +9,8 @@ Prioritized project roadmap.
   * Run migrations
   * Generate secret key
 * Hook-up prometheus monitoring (log the start and end of each request with the elapsed processing time);
-* Store grafana, prometheus, postgresql data in dev environment;
+* Store grafana, prometheus, elasticsearch, postgresql data in dev environment;
+* Create start-up script that starts main app only when dependencies (postgres, prometheus, logstash) are started;
 * Authorization for user update/delete;
 * Admin role, administrators could update/delete users too;
 * Automated testing: integration tests and unit-tests for models;
