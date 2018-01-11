@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -42,18 +43,26 @@ func Serve() {
 	r.Use(middleware.URLFormat)
 	r.Use(render.SetContentType(render.ContentTypeJSON))
 
-	r.Get("/", common.RootController)
-	r.Get("/ping", common.PingController)
-	r.Get("/panic", common.PanicController)
-
-	// RESTy routes for "user" resource
-	r.Mount("/user", user.UserRouter())
-
-	// RESTy routes for "sessions" resource
-	r.Mount("/sessions", user.SessionRouter())
-
 	// Prometheus instrumentation handler
 	r.Handle("/metrics", promhttp.Handler())
+
+	// Instrumented routes
+	r.Group(func(r chi.Router) {
+		// PrometheusInstrumentation
+		r.Use(PrometheusMiddleware)
+		r.Get("/", common.RootController)
+		r.Get("/ping", common.PingController)
+		r.Get("/panic", common.PanicController)
+
+		// RESTy routes for "user" resource
+		r.Mount("/user", user.UserRouter())
+
+		// RESTy routes for "sessions" resource
+		r.Mount("/sessions", user.SessionRouter())
+
+		// r.Handle(GET, "/6", Chain(mwIncreaseCounter).HandlerFunc(handlerPrintCounter))
+		// r.With(mwIncreaseCounter).Get("/6", handlerPrintCounter)
+	})
 
 	bindIP := ""
 	bindPort := os.Getenv("HTTP_PORT")
@@ -85,4 +94,15 @@ func init() {
 
 		render.DefaultResponder(w, r, v)
 	}
+}
+
+// TODO: Plug actual prometheus calls here
+func PrometheusMiddleware(next http.Handler) http.Handler {
+	start := time.Now().UTC().UnixNano()
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), "prometheus", "1")
+		next.ServeHTTP(w, r.WithContext(ctx))
+		respTime := time.Now().UTC().UnixNano() - start
+		fmt.Printf("%v\n", respTime)
+	})
 }
