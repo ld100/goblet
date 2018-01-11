@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"os"
 	"runtime"
+	"strconv"
 	"strings"
 
+	logrustash "github.com/bshuster-repo/logrus-logstash-hook"
 	"github.com/sirupsen/logrus"
-	//logrustash "github.com/bshuster-repo/logrus-logstash-hook"
 )
 
 // Initialization of package
@@ -25,18 +26,21 @@ func init() {
 	SetLogLevel(logrus.DebugLevel)
 
 	//Enabling logstash hook
-	// TODO: Uncomment once added logstash server
-	//logstashPort := os.Getenv("LOGSTASH_PORT")
-	//logstashHost := os.Getenv("LOGSTASH_HOST")
-	//logstashUrl := fmt.Sprintf("%v:%v", logstashHost, logstashPort)
-	//appName := os.Getenv("APP_NAME")
-	//
-	//hook, err := logrustash.NewHook("tcp", logstashUrl, appName)
-	//
-	//if err != nil {
-	//	logger.Fatal(err)
-	//}
-	//logger.Hooks.Add(hook)
+	logstashEnabled, _ := strconv.ParseBool(os.Getenv("LOGSTASH_ENABLED"))
+	if logstashEnabled {
+		logstashPort := os.Getenv("LOGSTASH_PORT")
+		logstashHost := os.Getenv("LOGSTASH_HOST")
+		logstashUrl := fmt.Sprintf("%v:%v", logstashHost, logstashPort)
+		appName := os.Getenv("APP_NAME")
+
+		hook, err := logrustash.NewHook("tcp", logstashUrl, appName)
+
+		if err != nil {
+			logger.Fatal(err)
+		}
+		logger.Hooks.Add(hook)
+	}
+
 }
 
 var logger = logrus.New()
