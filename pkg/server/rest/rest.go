@@ -6,17 +6,59 @@ import (
 	"net/http"
 	"os"
 	"time"
+	"strconv"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
 	"github.com/pressly/lg"
-	"github.com/sirupsen/logrus"
-	// "github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/sirupsen/logrus"
 
 	"github.com/ld100/goblet/pkg/domain/common"
 	user "github.com/ld100/goblet/pkg/domain/user/rest"
+)
+
+var (
+	serverStarted = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "http_handler_started_requests_total",
+			Help: "Count of started requests.",
+		},
+		[]string{"name", "handler", "host", "path", "method"},
+	)
+	serverCompleted = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "http_handler_completed_requests_total",
+			Help: "Count of completed requests.",
+		},
+		[]string{"name", "handler", "host", "path", "method", "status"},
+	)
+	serverLatency = prometheus.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Name:    "http_handler_completed_latency_seconds",
+			Help:    "Latency of completed requests.",
+			Buckets: []float64{.01, .03, .1, .3, 1, 3, 10, 30, 100, 300},
+		},
+		[]string{"name", "handler", "host", "path", "method", "status"},
+	)
+	serverRequestSize = prometheus.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Name:    "http_handler_request_size_bytes",
+			Help:    "Size of received requests.",
+			Buckets: prometheus.ExponentialBuckets(32, 32, 6),
+		},
+		[]string{"name", "handler", "host", "path", "method", "status"},
+	)
+	serverResponseSize = prometheus.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Name:    "http_handler_response_size_bytes",
+			Help:    "Size of sent responses.",
+			Buckets: prometheus.ExponentialBuckets(32, 32, 6),
+		},
+		[]string{"name", "handler", "host", "path", "method", "status"},
+	)
 )
 
 func Serve() {
@@ -49,7 +91,16 @@ func Serve() {
 	// Instrumented routes
 	r.Group(func(r chi.Router) {
 		// PrometheusInstrumentation
-		r.Use(PrometheusMiddleware)
+		prometheusEnabled, _ := strconv.ParseBool(os.Getenv("PROMETHEUS_ENABLED"))
+		if prometheusEnabled {
+			prometheus.MustRegister(serverStarted)
+			prometheus.MustRegister(serverCompleted)
+			prometheus.MustRegister(serverLatency)
+			prometheus.MustRegister(serverRequestSize)
+			prometheus.MustRegister(serverResponseSize)
+			r.Use(PrometheusMiddleware)
+		}
+
 		r.Get("/", common.RootController)
 		r.Get("/ping", common.PingController)
 		r.Get("/panic", common.PanicController)
@@ -99,10 +150,53 @@ func init() {
 // TODO: Plug actual prometheus calls here
 func PrometheusMiddleware(next http.Handler) http.Handler {
 	start := time.Now().UTC().UnixNano()
+	name := os.Getenv("APP_NAME")
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// "name", "handler", "host", "path", "method", "status"
+		requestSize := float64(r.ContentLength)
+		host := r.Host
+		path := r.RequestURI
+		method := r.Method
+
+		serverStarted.With(prometheus.Labels{
+			"name": name,
+			"handler": "",
+			"host": host,
+			"path": path,
+			"method": method,
+			}).Inc()
+		serverRequestSize.With(prometheus.Labels{
+			"name": name,
+			"handler": "",
+			"host": host,
+			"path": path,
+			"method": method,
+			"status": "",
+		}).Observe(requestSize)
+
 		ctx := context.WithValue(r.Context(), "prometheus", "1")
 		next.ServeHTTP(w, r.WithContext(ctx))
-		respTime := time.Now().UTC().UnixNano() - start
-		fmt.Printf("%v\n", respTime)
+
+		//	TODO: Log response body size and valid statuses
+		// Response time in miliseconds
+		var respTime float64
+		respTime = float64((time.Now().UTC().UnixNano() - start) / int64(time.Millisecond))
+		serverCompleted.With(prometheus.Labels{
+			"name": name,
+			"handler": "",
+			"host": host,
+			"path": path,
+			"method": method,
+			"status": "",
+		}).Inc()
+		serverLatency.With(prometheus.Labels{
+			"name": name,
+			"handler": "",
+			"host": host,
+			"path": path,
+			"method": method,
+			"status": "",
+		}).Observe(respTime)
 	})
 }
