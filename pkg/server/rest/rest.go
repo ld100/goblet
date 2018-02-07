@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"time"
 	"strconv"
+	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"

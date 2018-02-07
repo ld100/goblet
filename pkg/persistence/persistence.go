@@ -2,10 +2,10 @@ package persistence
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
-	"errors"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"

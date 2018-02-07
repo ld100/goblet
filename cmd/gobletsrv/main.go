@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/ld100/goblet/pkg/persistence/setup"
-	"github.com/ld100/goblet/pkg/server/rest"
 	"github.com/ld100/goblet/pkg/server/env"
+	"github.com/ld100/goblet/pkg/server/rest"
 )
 
 func main() {
