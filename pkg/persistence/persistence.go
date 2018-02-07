@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"errors"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -14,29 +15,90 @@ import (
 	"github.com/ld100/goblet/pkg/util/log"
 )
 
-var SqlDB *sql.DB
-var GormDB *gorm.DB
-
-func InitSqlDB(ds *DataSource) {
-	var err error
-	SqlDB, err = sql.Open("postgres", ds.DSN())
-	if err != nil {
-		log.Error(err)
-	}
-
-	if err = SqlDB.Ping(); err != nil {
-		log.Error(err)
-	}
+// DB acts as a handler for databases, providing both Gorm and plain SQL connection interfaces
+type DB struct {
+	SqlDB  *sql.DB
+	GormDB *gorm.DB
 }
 
-func InitGormDB(ds *DataSource) {
+// GORM connection handler
+func (db *DB) ORMConnection() (*gorm.DB, error) {
+	if db.GormDB == nil {
+		return nil, errors.New("ORM handler is not available")
+	}
+	return db.GormDB, nil
+}
+
+// SQL connection handler
+func (db *DB) SQLConnection() (*sql.DB, error) {
+	if db.SqlDB == nil {
+		if db.GormDB == nil {
+			return nil, errors.New("SQL handler is not available")
+		}
+		db.SqlDB = db.GormDB.DB()
+	}
+	return db.SqlDB, nil
+}
+
+// Constructor for database handlers, that provide both ORM/SQL connections
+func NewDB(ds *DataSource) (*DB, error) {
 	var err error
-	GormDB, err = gorm.Open("postgres", ds.DSN())
+	db := &DB{}
+
+	db.GormDB, err = gorm.Open("postgres", ds.DSN())
 	if err != nil {
 		log.Error(err)
+		return nil, err
 	}
 
-	validations.RegisterCallbacks(GormDB)
+	validations.RegisterCallbacks(db.GormDB)
+	return db, nil
+}
+
+// Common database utils: create/drop database, etc
+// Acts as a content-aware proxy adapter for sql.DB
+type DBUtil struct {
+	*sql.DB
+}
+
+// Create database with specified name
+func (db *DBUtil) CreateDB(name string) (error) {
+	_, err := db.DB.Exec("CREATE DATABASE " + name)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	return nil
+}
+
+// Drop database with specified name if it exists
+func (db *DBUtil) DropDB(name string) (error) {
+	_, err := db.Exec("DROP DATABASE IF NOT EXISTS " + name)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	return nil
+}
+
+func NewDButil(ds *DataSource) (*DBUtil, error) {
+	var err error
+	db := &DBUtil{}
+
+	db.DB, err = sql.Open("postgres", ds.ShortDSN())
+	//defer db.DB.Close()
+
+	if err != nil {
+		log.Error(err)
+		return nil, err
+	}
+
+	if err = db.DB.Ping(); err != nil {
+		log.Error(err)
+		return nil, err
+	}
+
+	return db, nil
 }
 
 type DataSource struct {
@@ -85,31 +147,18 @@ func (ds *DataSource) FetchENV() {
 	ds.Database = os.Getenv("DB_NAME")
 }
 
-func (ds *DataSource) CreateDB(name string) {
+// =====================================================================
+//  New implementation is on top of the file, old one is at the bottom
+// =====================================================================
 
-	db, err := sql.Open("postgres", ds.ShortDSN())
+var GormDB *gorm.DB
+
+func InitGormDB(ds *DataSource) {
+	var err error
+	GormDB, err = gorm.Open("postgres", ds.DSN())
 	if err != nil {
 		log.Error(err)
 	}
-	defer db.Close()
-	log.Debug(ds.DSN())
 
-	_, err = db.Exec("CREATE DATABASE " + name)
-	if err != nil {
-		log.Error(err)
-	}
-}
-
-// TODO: Move common functionality between CreateDB and DropDB to separate private method
-func (ds *DataSource) DopDB(name string) {
-	db, err := sql.Open("postgres", ds.ShortDSN())
-	if err != nil {
-		log.Error(err)
-	}
-	defer db.Close()
-
-	_, err = db.Exec("DROP DATABASE IF NOT EXISTS " + name)
-	if err != nil {
-		log.Error(err)
-	}
+	validations.RegisterCallbacks(GormDB)
 }

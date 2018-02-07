@@ -10,14 +10,26 @@ import (
 	"github.com/ld100/goblet/pkg/persistence/migrate"
 )
 
-func SetupDatabases() {
+func SetupDatabases() (*persistence.DB, error) {
 	// Create database if not exist
 	ds := &persistence.DataSource{}
 	// Fetch database credentials from ENVIRONMENT
 	ds.FetchENV()
-	ds.CreateDB(os.Getenv("DB_NAME"))
+
+	u, err := persistence.NewDButil(ds)
+	if err != nil {
+		return nil, err
+	} else {
+		err := u.CreateDB(os.Getenv("DB_NAME"))
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	db, err := persistence.NewDB(ds)
 
 	// Initiate global ORM var
+	// Used for backward-compatibility
 	persistence.InitGormDB(ds)
 
 	// Run migrations
@@ -25,4 +37,6 @@ func SetupDatabases() {
 
 	// Run db seed
 	migrate.Seed()
+
+	return db, nil
 }
