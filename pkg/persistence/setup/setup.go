@@ -31,15 +31,11 @@ func SetupDatabases() (*persistence.DB, error) {
 		return nil, err
 	}
 
-	// Run migrations	
+	// Run migrations
 	migrate.Migrate(db)
 
 	// Run db seed
 	migrate.Seed(db)
-
-	// Initiate global ORM var
-	// Used for backward-compatibility
-	persistence.InitGormDB(ds)
 
 	return db, nil
 }

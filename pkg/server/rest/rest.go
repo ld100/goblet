@@ -18,6 +18,7 @@ import (
 
 	"github.com/ld100/goblet/pkg/domain/common"
 	user "github.com/ld100/goblet/pkg/domain/user/rest"
+	"github.com/ld100/goblet/pkg/server/env"
 )
 
 var (
@@ -61,7 +62,7 @@ var (
 	)
 )
 
-func Serve() {
+func Serve(env *env.Env) {
 
 	// Setup the logger
 	logger := logrus.New()
@@ -106,10 +107,10 @@ func Serve() {
 		r.Get("/panic", common.PanicController)
 
 		// RESTy routes for "user" resource
-		r.Mount("/user", user.UserRouter())
+		r.Mount("/user", user.UserRouter(env))
 
 		// RESTy routes for "sessions" resource
-		r.Mount("/sessions", user.SessionRouter())
+		r.Mount("/sessions", user.SessionRouter(env))
 
 		// r.Handle(GET, "/6", Chain(mwIncreaseCounter).HandlerFunc(handlerPrintCounter))
 		// r.With(mwIncreaseCounter).Get("/6", handlerPrintCounter)
@@ -160,19 +161,19 @@ func PrometheusMiddleware(next http.Handler) http.Handler {
 		method := r.Method
 
 		serverStarted.With(prometheus.Labels{
-			"name": name,
+			"name":    name,
 			"handler": "",
-			"host": host,
-			"path": path,
-			"method": method,
-			}).Inc()
+			"host":    host,
+			"path":    path,
+			"method":  method,
+		}).Inc()
 		serverRequestSize.With(prometheus.Labels{
-			"name": name,
+			"name":    name,
 			"handler": "",
-			"host": host,
-			"path": path,
-			"method": method,
-			"status": "",
+			"host":    host,
+			"path":    path,
+			"method":  method,
+			"status":  "",
 		}).Observe(requestSize)
 
 		ctx := context.WithValue(r.Context(), "prometheus", "1")
@@ -183,20 +184,20 @@ func PrometheusMiddleware(next http.Handler) http.Handler {
 		var respTime float64
 		respTime = float64((time.Now().UTC().UnixNano() - start) / int64(time.Millisecond))
 		serverCompleted.With(prometheus.Labels{
-			"name": name,
+			"name":    name,
 			"handler": "",
-			"host": host,
-			"path": path,
-			"method": method,
-			"status": "",
+			"host":    host,
+			"path":    path,
+			"method":  method,
+			"status":  "",
 		}).Inc()
 		serverLatency.With(prometheus.Labels{
-			"name": name,
+			"name":    name,
 			"handler": "",
-			"host": host,
-			"path": path,
-			"method": method,
-			"status": "",
+			"host":    host,
+			"path":    path,
+			"method":  method,
+			"status":  "",
 		}).Observe(respTime)
 	})
 }

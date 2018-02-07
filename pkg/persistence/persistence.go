@@ -146,19 +146,3 @@ func (ds *DataSource) FetchENV() {
 	ds.Password = os.Getenv("DB_PASSWORD")
 	ds.Database = os.Getenv("DB_NAME")
 }
-
-// =====================================================================
-//  New implementation is on top of the file, old one is at the bottom
-// =====================================================================
-
-var GormDB *gorm.DB
-
-func InitGormDB(ds *DataSource) {
-	var err error
-	GormDB, err = gorm.Open("postgres", ds.DSN())
-	if err != nil {
-		log.Error(err)
-	}
-
-	validations.RegisterCallbacks(GormDB)
-}

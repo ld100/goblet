@@ -14,9 +14,9 @@ import (
 	"github.com/ld100/goblet/pkg/domain/user/model"
 	"github.com/ld100/goblet/pkg/domain/user/repository/orm"
 	"github.com/ld100/goblet/pkg/domain/user/service"
-	"github.com/ld100/goblet/pkg/persistence"
 	httperrors "github.com/ld100/goblet/pkg/server/rest/error"
 	"github.com/ld100/goblet/pkg/util/log"
+	"github.com/ld100/goblet/pkg/server/env"
 )
 
 var tokenAuth *jwtauth.JWTAuth
@@ -25,9 +25,12 @@ func init() {
 	tokenAuth = jwtauth.New("HS256", []byte(os.Getenv("SECRET_KEY")), nil)
 }
 
-func SessionRouter() chi.Router {
+func SessionRouter(env *env.Env) chi.Router {
 	// Persistence/Data layers wiring
-	dbConn := persistence.GormDB
+	dbConn, err := env.DB.ORMConnection()
+	if err != nil {
+		log.Fatal("cannot connect SessionRouter to the database", err)
+	}
 
 	sessionRepo := orm.NewOrmSessionRepository(dbConn)
 	sessionService := service.NewSessionService(sessionRepo)

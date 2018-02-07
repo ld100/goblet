@@ -13,18 +13,22 @@ import (
 	"github.com/ld100/goblet/pkg/domain/user/model"
 	"github.com/ld100/goblet/pkg/domain/user/repository/orm"
 	"github.com/ld100/goblet/pkg/domain/user/service"
-	"github.com/ld100/goblet/pkg/persistence"
 	httperrors "github.com/ld100/goblet/pkg/server/rest/error"
 	"github.com/ld100/goblet/pkg/util/log"
+	"github.com/ld100/goblet/pkg/server/env"
 )
 
 func init() {
 	tokenAuth = jwtauth.New("HS256", []byte(os.Getenv("SECRET_KEY")), nil)
 }
 
-func UserRouter() chi.Router {
+func UserRouter(env *env.Env) chi.Router {
 	// Persistence/Data layers wiring
-	dbConn := persistence.GormDB
+	dbConn, err := env.DB.ORMConnection()
+	if err != nil {
+		log.Fatal("cannot connect UserRouter to the database", err)
+	}
+
 	userRepo := orm.NewOrmUserRepository(dbConn)
 	userService := service.NewUserService(userRepo)
 	handler := &RESTUserHandler{UService: userService}
