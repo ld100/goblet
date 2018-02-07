@@ -4,15 +4,19 @@ import (
 	"time"
 
 	"github.com/jinzhu/gorm"
-	gormigrate "gopkg.in/gormigrate.v1"
+	"gopkg.in/gormigrate.v1"
 
 	"github.com/ld100/goblet/pkg/domain/user/model"
 	"github.com/ld100/goblet/pkg/persistence"
 	"github.com/ld100/goblet/pkg/util/log"
 )
 
-func Migrate() {
-	db := persistence.GormDB
+// TODO: return errors if something went wrong
+func Migrate(handler *persistence.DB) {
+	db, err := handler.ORMConnection()
+	if err != nil {
+		log.Fatal("could not migrate: ", err)
+	}
 
 	db.LogMode(true)
 
@@ -74,8 +78,13 @@ func Rollback201712141900(tx *gorm.DB) error {
 
 // Database Seed
 // TODO: Wrap in transactions
-func Seed() {
-	//log.Debug("Database seed initiated")
+// TODO: return errors if something went wrong
+func Seed(handler *persistence.DB) {
+	db, err := handler.ORMConnection()
+	if err != nil {
+		log.Fatal("could not seed: ", err)
+	}
+
 	user := model.User{
 		FirstName: "Admin",
 		LastName:  "Adminovich",
@@ -83,7 +92,6 @@ func Seed() {
 		Password:  "password",
 	}
 
-	db := persistence.GormDB
 	error := db.Where("email = ?", user.Email).First(&user)
 	if error != nil {
 		// User with this e-mail was not found, so let's create one
