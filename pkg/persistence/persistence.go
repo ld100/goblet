@@ -4,14 +4,13 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"os"
-	"strconv"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	_ "github.com/lib/pq"
 	"github.com/qor/validations"
 
+	"github.com/ld100/goblet/pkg/util/config"
 	"github.com/ld100/goblet/pkg/util/log"
 )
 
@@ -138,11 +137,27 @@ func (ds *DataSource) ShortDSN() string {
 	return dsn
 }
 
-// Fetch data from environment variables
-func (ds *DataSource) FetchENV() {
-	ds.Host = os.Getenv("DB_HOST")
-	ds.Port, _ = strconv.Atoi(os.Getenv("DB_PORT"))
-	ds.Username = os.Getenv("DB_USER")
-	ds.Password = os.Getenv("DB_PASSWORD")
-	ds.Database = os.Getenv("DB_NAME")
+func NewDS(host string, port int, username string, password string, database string) (*DataSource) {
+	ds := &DataSource{
+		Host:     host,
+		Port:     port,
+		Username: username,
+		Password: password,
+	}
+	if database != "" {
+		ds.Database = database
+	}
+	return ds
+}
+
+func NewDSFromCFG(cfg *config.Config) (*DataSource) {
+	ds := &DataSource{
+		Host:     cfg.GetString("DB_HOST"),
+		Port:     cfg.GetInt("DB_PORT"),
+		Username: cfg.GetString("DB_USER"),
+		Password: cfg.GetString("DB_PASSWORD"),
+		Database: cfg.GetString("DB_NAME"),
+	}
+
+	return ds
 }

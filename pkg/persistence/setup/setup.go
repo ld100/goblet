@@ -10,21 +10,21 @@ import (
 )
 
 func SetupDatabases(cfg *config.Config) (*persistence.DB, error) {
-	// Create database if not exist
-	ds := &persistence.DataSource{}
-	// Fetch database credentials from ENVIRONMENT
-	ds.FetchENV()
+	// Fetch database credentials from provided config
+	ds := persistence.NewDSFromCFG(cfg)
 
 	u, err := persistence.NewDButil(ds)
 	if err != nil {
 		return nil, err
 	} else {
+		// Create database if not exist
 		err := u.CreateDB(cfg.GetString("DB_NAME"))
 		if err != nil {
 			return nil, err
 		}
 	}
 
+	// Instantiate database handler
 	db, err := persistence.NewDB(ds)
 	if err != nil {
 		return nil, err
