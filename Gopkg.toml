@@ -61,3 +61,13 @@
 [[constraint]]
   name = "github.com/prometheus/client_golang"
   version = "0.8.0"
+
+# Configuration tool
+[[constraint]]
+  name = "github.com/spf13/viper"
+  version = "1.0.0"
+
+# Command-line kung-fu
+[[constraint]]
+  name = "github.com/spf13/cobra"
+  version = "0.0.1"

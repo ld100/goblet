@@ -1,16 +1,15 @@
 package setup
 
 import (
-	"os"
-
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	_ "github.com/lib/pq"
 
 	"github.com/ld100/goblet/pkg/persistence"
 	"github.com/ld100/goblet/pkg/persistence/migrate"
+	"github.com/ld100/goblet/pkg/util/config"
 )
 
-func SetupDatabases() (*persistence.DB, error) {
+func SetupDatabases(cfg *config.Config) (*persistence.DB, error) {
 	// Create database if not exist
 	ds := &persistence.DataSource{}
 	// Fetch database credentials from ENVIRONMENT
@@ -20,7 +19,7 @@ func SetupDatabases() (*persistence.DB, error) {
 	if err != nil {
 		return nil, err
 	} else {
-		err := u.CreateDB(os.Getenv("DB_NAME"))
+		err := u.CreateDB(cfg.GetString("DB_NAME"))
 		if err != nil {
 			return nil, err
 		}

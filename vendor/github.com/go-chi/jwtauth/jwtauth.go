@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -19,6 +20,7 @@ var (
 var (
 	ErrUnauthorized = errors.New("jwtauth: token is unauthorized")
 	ErrExpired      = errors.New("jwtauth: token is expired")
+	ErrNoTokenFound = errors.New("jwtauth: no token found")
 )
 
 type JWTAuth struct {
@@ -96,6 +98,9 @@ func VerifyRequest(ja *JWTAuth, r *http.Request, findTokenFns ...func(r *http.Re
 		if tokenStr != "" {
 			break
 		}
+	}
+	if tokenStr == "" {
+		return nil, ErrNoTokenFound
 	}
 
 	// TODO: what other kinds of validations should we do / error messages?
@@ -187,11 +192,14 @@ func FromContext(ctx context.Context) (*jwt.Token, Claims, error) {
 
 	var claims Claims
 	if token != nil {
-		tokenClaims, ok := token.Claims.(jwt.MapClaims)
-		if !ok {
-			panic("jwtauth: expecting jwt.MapClaims")
+		switch tokenClaims := token.Claims.(type) {
+		case Claims:
+			// Nop.
+		case jwt.MapClaims:
+			claims = Claims(tokenClaims)
+		default:
+			panic(fmt.Sprintf("jwtauth: unknown type of Claims: %T", token.Claims))
 		}
-		claims = Claims(tokenClaims)
 	} else {
 		claims = Claims{}
 	}
