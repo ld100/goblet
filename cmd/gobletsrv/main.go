@@ -5,6 +5,7 @@ import (
 	"github.com/ld100/goblet/pkg/server/env"
 	"github.com/ld100/goblet/pkg/server/rest"
 	"github.com/ld100/goblet/pkg/util/config"
+	"github.com/ld100/goblet/pkg/util/logger"
 )
 
 func main() {
@@ -15,16 +16,20 @@ func main() {
 	cfg := &config.Config{}
 	env.Config = cfg
 
-	// TODO: Put global logger to Env
+	// Create global logger object and pass it to environment
+	log := logger.New(cfg)
+	env.Logger = log
 
 	// Prepare initial data: create db, run migrations and seeds
 	// Take appropriate configuration data from cfg object
 	db, err := setup.SetupDatabases(cfg)
 	if err != nil {
-		//	Put error handling here
-	}
-	env.DB = db
+		log.Fatal("cannot set up the database ", err)
+	} else {
+		env.DB = db
 
-	// Launch CHI-based RESTful HTTP server
-	rest.Serve(env)
+		// Launch CHI-based RESTful HTTP server
+		rest.Serve(env)
+	}
+
 }

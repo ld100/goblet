@@ -3,6 +3,7 @@ package env
 import (
 	"github.com/ld100/goblet/pkg/persistence"
 	"github.com/ld100/goblet/pkg/util/config"
+	"github.com/ld100/goblet/pkg/util/logger"
 )
 
 // Environment context, which is passed through whole application.
@@ -11,9 +12,5 @@ import (
 type Env struct {
 	DB     *persistence.DB
 	Config *config.Config
-	Logger *Logger
-}
-
-// Logging wrapper on top of sirupsen/logrus
-type Logger struct {
+	Logger *logger.Logger
 }

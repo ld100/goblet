@@ -14,7 +14,6 @@ import (
 	"github.com/pressly/lg"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/sirupsen/logrus"
 
 	"github.com/ld100/goblet/pkg/domain/common"
 	user "github.com/ld100/goblet/pkg/domain/user/rest"
@@ -65,9 +64,10 @@ var (
 func Serve(env *env.Env) {
 
 	// Setup the logger
-	logger := logrus.New()
-	logger.Formatter = &logrus.JSONFormatter{}
+	//logger := logrus.New()
+	//logger.Formatter = &logrus.JSONFormatter{}
 
+	logger := env.Logger.Logger
 	lg.RedirectStdlogOutput(logger)
 	lg.DefaultLogger = logger
 
