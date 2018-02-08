@@ -60,19 +60,46 @@ type DBUtil struct {
 	*sql.DB
 }
 
-// Create database with specified name
-func (db *DBUtil) CreateDB(name string) (error) {
-	_, err := db.DB.Exec("CREATE DATABASE " + name)
+// Checks if database with specific name exists
+func (db *DBUtil) Exists(name string) (bool, error) {
+	query := fmt.Sprintf("SELECT datname FROM pg_catalog.pg_database WHERE lower(datname) = lower('%s');", name)
+	rows, err := db.DB.Query(query)
+
 	if err != nil {
 		log.Error(err)
-		return err
+		return false, err
 	}
+
+	defer rows.Close()
+	var datname string;
+	for rows.Next() {
+		err = rows.Scan(&datname)
+		if err != nil {
+			return false, nil
+		} else {
+			return true, nil
+		}
+	}
+	return false, nil
+}
+
+// Create database with specified name
+func (db *DBUtil) CreateDB(name string) (error) {
+	exists, err := db.Exists(name)
+	if !exists {
+		_, err = db.DB.Exec("CREATE DATABASE " + name)
+		if err != nil {
+			log.Error(err)
+			return err
+		}
+	}
+
 	return nil
 }
 
 // Drop database with specified name if it exists
 func (db *DBUtil) DropDB(name string) (error) {
-	_, err := db.Exec("DROP DATABASE IF NOT EXISTS " + name)
+	_, err := db.Exec("DROP DATABASE IF EXISTS " + name)
 	if err != nil {
 		log.Error(err)
 		return err

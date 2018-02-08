@@ -30,8 +30,8 @@ RUN dep ensure -vendor-only
 
 EXPOSE 8080
 
-CMD ["go-wrapper", "run"]
+#CMD ["go-wrapper", "run"]
 
 # Build my app
-# RUN go build -o $BUILDDIR/main .
-# CMD ["$BUILDDIR/main"]
+RUN go build -o $BUILDDIR/gobserve cmd/gobserve/main.go
+CMD ["$BUILDDIR/gobserve"]

@@ -77,7 +77,7 @@ func Rollback201712141900(tx *gorm.DB) error {
 }
 
 // Database Seed
-// TODO: Wrap in transactions
+// TODO: Wrap in transactions: http://gorm.io/advanced.html#transactions
 // TODO: return errors if something went wrong
 func Seed(handler *persistence.DB) {
 	db, err := handler.ORMConnection()
@@ -92,8 +92,7 @@ func Seed(handler *persistence.DB) {
 		Password:  "password",
 	}
 
-	error := db.Where("email = ?", user.Email).First(&user)
-	if error != nil {
+	if err = db.Where("email = ?", user.Email).First(&user).Error; err != nil {
 		// User with this e-mail was not found, so let's create one
 		errors := db.Create(&user).GetErrors()
 		if len(errors) > 0 {

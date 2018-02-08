@@ -21,7 +21,7 @@ type Session struct {
 
 func (s Session) Validate(db *gorm.DB) {
 	if s.ExpiresAt.Before(time.Now().UTC()) {
-		db.AddError(errors.New("you cannot set session expiration tim in the past"))
+		db.AddError(errors.New("you cannot set session expiration time in the past"))
 	}
 }
 
@@ -30,12 +30,12 @@ func (s *Session) BeforeCreate() (err error) {
 	if len(s.Uuid) == 0 {
 		s.Uuid, err = securerandom.Uuid()
 		if err != nil {
-			err = errors.New("cannot generate UUID for session")
-			log.Fatal(err)
+			log.Error("cannot generate UUID for session", err)
+			return err
 		}
 	}
 
-	return
+	return nil
 }
 
 func CleanUpSessions() (err error) {

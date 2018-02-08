@@ -29,18 +29,18 @@ func (u *User) BeforeCreate() (err error) {
 	// Hash password
 	u.Password, err = HashPassword(u.Password)
 	if err != nil {
-		err = errors.New("cannot hash user password")
-		log.Fatal(err)
+		log.Error("cannot hash user password", err)
+		return err
 	}
 
 	// Set UUID for the user
 	u.Uuid, err = securerandom.Uuid()
 	if err != nil {
-		err = errors.New("cannot generate UUID for user")
-		log.Fatal(err)
+		log.Error("cannot generate UUID for user", err)
+		return err
 	}
 
-	return
+	return nil
 }
 
 // Detect if password was set, encode it if needed
@@ -48,11 +48,11 @@ func (u *User) BeforeUpdate() (err error) {
 	if !hash.IsBase64(u.Password) {
 		u.Password, err = HashPassword(u.Password)
 		if err != nil {
-			err = errors.New("cannot hash user password")
-			log.Fatal(err)
+			log.Error("cannot hash user password", err)
+			return err
 		}
 	}
-	return
+	return nil
 }
 
 func (u User) Validate(db *gorm.DB) {
@@ -61,7 +61,7 @@ func (u User) Validate(db *gorm.DB) {
 	}
 }
 
-func HashPassword(password string) (string, error) {
+func HashPassword(password string) (hash string, err error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	return string(bytes), err
 }

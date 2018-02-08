@@ -16,7 +16,8 @@ services:
     volumes:
       - ${PWD-.}/:/go/src/github.com/ld100/goblet
     working_dir: /go/src/github.com/ld100/goblet
-    command: go run cmd/gobletsrv/main.go
+    # command: go run cmd/gobserve/main.go
+    command: /bin/sh bin/start.sh
     environment:
       APP_NAME: goblet
       APP_ENV: development
