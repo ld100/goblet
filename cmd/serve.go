@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/ld100/goblet/pkg/persistence/setup"
+	"github.com/ld100/goblet/pkg/persistence"
 	"github.com/ld100/goblet/pkg/server/env"
 	"github.com/ld100/goblet/pkg/server/rest"
 	"github.com/ld100/goblet/pkg/util/config"
@@ -34,16 +34,16 @@ var serveCmd = &cobra.Command{
 		log := logger.New(cfg)
 		env.Logger = log
 
-		// Prepare initial data: create db, run migrations and seeds
+		// Initiate database handler
 		// Take appropriate configuration data from cfg object
-		db, err := setup.SetupDatabases(cfg)
+		ds := persistence.NewDSFromCFG(cfg)
+		db, err := persistence.NewDB(ds)
 		if err != nil {
-			log.Fatal("cannot set up the database ", err)
-		} else {
-			env.DB = db
-
-			// Launch CHI-based RESTful HTTP server
-			rest.Serve(env)
+			log.Fatal("cannot initiate the database ", err)
 		}
+		env.DB = db
+
+		// Launch CHI-based RESTful HTTP server
+		rest.Serve(env)
 	},
 }

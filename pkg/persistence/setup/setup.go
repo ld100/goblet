@@ -8,6 +8,7 @@ import (
 	"github.com/ld100/goblet/pkg/util/config"
 )
 
+// TODO: Fully move CreateDB functionality to command
 // Creates SQL database with specified name
 // Takes name from DB_NAME environment variable if not provided directly
 func CreateDB(cfg *config.Config, name string) (err error) {
@@ -28,24 +29,3 @@ func CreateDB(cfg *config.Config, name string) (err error) {
 }
 
 // TODO: Implement DropDB
-
-// TODO: Implement MigrateDB
-
-// TODO: Implement SeedDB
-
-// ======================================================
-//  Old functionality, remove it once not used
-// ======================================================
-
-func SetupDatabases(cfg *config.Config) (*persistence.DB, error) {
-	// Fetch database credentials from provided config
-	ds := persistence.NewDSFromCFG(cfg)
-
-	// Instantiate database handler
-	db, err := persistence.NewDB(ds)
-	if err != nil {
-		return nil, err
-	}
-
-	return db, nil
-}
