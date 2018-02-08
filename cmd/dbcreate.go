@@ -30,7 +30,7 @@ var dbCreateCmd = &cobra.Command{
 		log := logger.New(cfg)
 		err := setup.CreateDB(cfg, dbName)
 		if err != nil {
-			log.Fatal("cannot create database database ", err)
+			log.Fatal("cannot create database ", err)
 		} else {
 			fmt.Println("database created succesfully")
 		}

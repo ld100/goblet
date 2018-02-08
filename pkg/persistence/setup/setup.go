@@ -5,7 +5,6 @@ import (
 	_ "github.com/lib/pq"
 
 	"github.com/ld100/goblet/pkg/persistence"
-	"github.com/ld100/goblet/pkg/persistence/migrate"
 	"github.com/ld100/goblet/pkg/util/config"
 )
 
@@ -47,12 +46,6 @@ func SetupDatabases(cfg *config.Config) (*persistence.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	// Run migrations
-	migrate.Migrate(db)
-
-	// Run db seed
-	migrate.Seed(db)
 
 	return db, nil
 }
