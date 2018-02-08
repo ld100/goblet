@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ld100/goblet/pkg/persistence/setup"
+	"github.com/ld100/goblet/pkg/persistence"
 	"github.com/ld100/goblet/pkg/util/config"
 	"github.com/ld100/goblet/pkg/util/logger"
 	"github.com/spf13/cobra"
@@ -21,14 +21,22 @@ var dbCreateCmd = &cobra.Command{
 	Args:  cobra.RangeArgs(0, 1),
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Creating database with arguments: " + strings.Join(args, " "))
-		dbName := ""
-		if len(args) > 0 {
-			dbName = args[0]
-		}
-
 		cfg := &config.Config{}
 		log := logger.New(cfg)
-		err := setup.CreateDB(cfg, dbName)
+
+		ds := persistence.NewDSFromCFG(cfg)
+		u, err := persistence.NewDButil(ds)
+		if err != nil {
+			log.Fatal("cannot create database ", err)
+		}
+
+		var dbName string
+		if len(args) > 0 {
+			dbName = args[0]
+		} else {
+			dbName = cfg.GetString("DB_NAME")
+		}
+		err = u.CreateDB(dbName)
 		if err != nil {
 			log.Fatal("cannot create database ", err)
 		} else {

@@ -18,16 +18,14 @@ while ! nc -z ${DB_HOST} ${DB_PORT}; do
 done
 echo "Postgres online, continuing boot."
 
-# Put database creation, migrations and seeds here
-echo "Creating default database"
+#echo "Creating default database"
 ${GOBLET_BINARY} dbcreate
 
-echo "Running database migrations"
+#echo "Running database migrations"
 ${GOBLET_BINARY} dbmigrate
 
-echo "Seeding database with initial data"
+#echo "Seeding database with initial data"
 ${GOBLET_BINARY} dbseed
 
-echo "Launching Goblet server"
+#echo "Launching Goblet server"
 ${GOBLET_BINARY} serve
-
