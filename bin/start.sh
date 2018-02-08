@@ -19,6 +19,8 @@ done
 echo "Postgres online, continuing boot."
 
 # Put database creation, migrations and seeds here
+echo "Creating default database"
+${GOBLET_BINARY} dbcreate
 
 echo "Launching Goblet server"
 ${GOBLET_BINARY} serve
