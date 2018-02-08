@@ -4,6 +4,7 @@ FROM golang:1.9.2-alpine
 ENV GOBIN /go/bin
 ENV WORKDIR /go/src/github.com/ld100/goblet
 ENV BUILDDIR /app
+ENV PATH="${BUILDDIR}:${PATH}"
 
 # Install dependencies
 RUN apk --update add git
@@ -33,5 +34,6 @@ EXPOSE 8080
 #CMD ["go-wrapper", "run"]
 
 # Build my app
-RUN go build -o $BUILDDIR/gobserve cmd/gobserve/main.go
-CMD ["$BUILDDIR/gobserve"]
+#RUN go build -o $BUILDDIR/goblet .
+RUN go build -o $BUILDDIR/goblet main.go
+CMD ["$BUILDDIR/goblet", "serve"]

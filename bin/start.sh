@@ -1,5 +1,5 @@
 #!/bin/sh
-GOBSERV_BINARY=/app/gobserve
+GOBLET_BINARY=/app/goblet
 
 # Checking if logstash monitoring required
 if [ -n "${LOGSTASH_ENABLED+set}" ]; then
@@ -21,4 +21,4 @@ echo "Postgres online, continuing boot."
 # Put database creation, migrations and seeds here
 
 echo "Launching Goblet server"
-${GOBSERV_BINARY}
+${GOBLET_BINARY} serve
