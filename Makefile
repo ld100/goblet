@@ -11,7 +11,7 @@ all: test build
 build:
 		$(GOBUILD) -o $(BINARY_NAME) -v
 # https://blog.alexellis.io/golang-writing-unit-tests/
-test:
+tests:
 		$(GOTEST) -v ./... -cover
 clean:
 		$(GOCLEAN)

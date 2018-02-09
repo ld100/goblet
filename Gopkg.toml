@@ -83,6 +83,11 @@
     name = "github.com/onsi/ginkgo"
     version = "1.4.0"
 
+# Matchers for ginkgo
+[[constraint]]
+    name = "github.com/onsi/gomega"
+    version = "1.3.0"
+
 # Data generation factories
 [[constraint]]
   name = "github.com/bluele/factory-go"
@@ -97,3 +102,8 @@
 [[constraint]]
     name = "github.com/DATA-DOG/go-sqlmock"
     version = "1.3.0"
+
+# A developer-friendly HTTP request library for Gopher. Inspired by Python-Requests.
+[[constraint]]
+    name = "github.com/mozillazg/request"
+    version = "0.8.0"

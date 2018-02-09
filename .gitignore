@@ -27,3 +27,6 @@ data/
 
 # Temporary files
 tmp/
+
+# dep temporary dir
+vendor.orig/
