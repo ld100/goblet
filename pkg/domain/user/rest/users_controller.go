@@ -29,6 +29,7 @@ func UserRouter(env *env.Env) chi.Router {
 
 	// RESTful routes
 	r := chi.NewRouter()
+	// TODO: Remove show all users endpoint, it is used just for debug purposes now
 	r.Get("/", handler.GetAll)
 	r.Post("/", handler.Store) // POST /user
 	r.Route("/{userID}", func(r chi.Router) {
@@ -135,7 +136,6 @@ func (handler *RESTUserHandler) userCtx(next http.Handler) http.Handler {
 		var err error
 
 		if userID := chi.URLParam(r, "userID"); userID != "" {
-			// TODO: Check whether userID is integer actually
 			intUserId, _ := strconv.Atoi(userID)
 			user, err = handler.UService.GetByID(uint(intUserId))
 		} else {
