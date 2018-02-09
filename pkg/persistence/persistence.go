@@ -11,7 +11,6 @@ import (
 	"github.com/qor/validations"
 
 	"github.com/ld100/goblet/pkg/util/config"
-	"github.com/ld100/goblet/pkg/util/log"
 )
 
 // DB acts as a handler for databases, providing both Gorm and plain SQL connection interfaces
@@ -46,7 +45,6 @@ func NewDB(ds *DataSource) (*DB, error) {
 
 	db.GormDB, err = gorm.Open("postgres", ds.DSN())
 	if err != nil {
-		log.Error(err)
 		return nil, err
 	}
 
@@ -66,7 +64,6 @@ func (db *DBUtil) Exists(name string) (bool, error) {
 	rows, err := db.DB.Query(query)
 
 	if err != nil {
-		log.Error(err)
 		return false, err
 	}
 
@@ -89,7 +86,6 @@ func (db *DBUtil) CreateDB(name string) (error) {
 	if !exists {
 		_, err = db.DB.Exec("CREATE DATABASE " + name)
 		if err != nil {
-			log.Error(err)
 			return err
 		}
 	}
@@ -101,7 +97,6 @@ func (db *DBUtil) CreateDB(name string) (error) {
 func (db *DBUtil) DropDB(name string) (error) {
 	_, err := db.Exec("DROP DATABASE IF EXISTS " + name)
 	if err != nil {
-		log.Error(err)
 		return err
 	}
 	return nil
@@ -115,12 +110,10 @@ func NewDButil(ds *DataSource) (*DBUtil, error) {
 	//defer db.DB.Close()
 
 	if err != nil {
-		log.Error(err)
 		return nil, err
 	}
 
 	if err = db.DB.Ping(); err != nil {
-		log.Error(err)
 		return nil, err
 	}
 

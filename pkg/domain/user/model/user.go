@@ -8,7 +8,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/ld100/goblet/pkg/util/hash"
-	"github.com/ld100/goblet/pkg/util/log"
 	"github.com/ld100/goblet/pkg/util/securerandom"
 )
 
@@ -29,15 +28,13 @@ func (u *User) BeforeCreate() (err error) {
 	// Hash password
 	u.Password, err = HashPassword(u.Password)
 	if err != nil {
-		log.Error("cannot hash user password", err)
-		return err
+		return errors.New("cannot hash user password: " + err.Error())
 	}
 
 	// Set UUID for the user
 	u.Uuid, err = securerandom.Uuid()
 	if err != nil {
-		log.Error("cannot generate UUID for user", err)
-		return err
+		return errors.New("cannot generate UUID for user: " + err.Error())
 	}
 
 	return nil
@@ -48,8 +45,7 @@ func (u *User) BeforeUpdate() (err error) {
 	if !hash.IsBase64(u.Password) {
 		u.Password, err = HashPassword(u.Password)
 		if err != nil {
-			log.Error("cannot hash user password", err)
-			return err
+			return errors.New("cannot hash user password: " + err.Error())
 		}
 	}
 	return nil

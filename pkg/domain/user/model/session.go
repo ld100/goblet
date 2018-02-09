@@ -6,7 +6,6 @@ import (
 
 	"github.com/jinzhu/gorm"
 
-	"github.com/ld100/goblet/pkg/util/log"
 	"github.com/ld100/goblet/pkg/util/securerandom"
 )
 
@@ -30,8 +29,7 @@ func (s *Session) BeforeCreate() (err error) {
 	if len(s.Uuid) == 0 {
 		s.Uuid, err = securerandom.Uuid()
 		if err != nil {
-			log.Error("cannot generate UUID for session", err)
-			return err
+			return errors.New("cannot generate UUID for session: " + err.Error())
 		}
 	}
 
