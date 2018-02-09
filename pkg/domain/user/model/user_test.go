@@ -71,7 +71,7 @@ func TestUserBeforeCreate(t *testing.T) {
 		Email:    "test@example.com",
 		Password: password,
 	}
-	err := user.BeforeUpdate()
+	err := user.BeforeCreate()
 	assert.Nil(err)
 	assert.NotEqual(password, user.Password, "Password should be hashed on create")
 }
