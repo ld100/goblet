@@ -23,7 +23,7 @@ Go code consists of common use packages and domain-specific ones. Common use pac
 `pkg/util` packages consists of many (not always related) subpackages:
 
 * hash − different hash utils, for example base64 operations.
-* log − Logrus library wrapper to be used in all parts of the app for logging.
+* logger − Logrus library wrapper to be used in all parts of the app for logging.
 * securerandom − Golang's copy of Ruby's securerandom package. Used mostly for UUIDs generation.
 
 ## Monitoring
