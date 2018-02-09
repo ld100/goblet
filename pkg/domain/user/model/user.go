@@ -32,10 +32,8 @@ func (u *User) BeforeCreate() (err error) {
 	}
 
 	// Set UUID for the user
-	u.Uuid, err = securerandom.Uuid()
-	if err != nil {
-		return errors.New("cannot generate UUID for user: " + err.Error())
-	}
+	// actually securerandom.Uuid() never errors
+	u.Uuid, _ = securerandom.Uuid()
 
 	return nil
 }

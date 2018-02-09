@@ -27,10 +27,8 @@ func (s Session) Validate(db *gorm.DB) {
 func (s *Session) BeforeCreate() (err error) {
 	// Set UUID for the user
 	if len(s.Uuid) == 0 {
-		s.Uuid, err = securerandom.Uuid()
-		if err != nil {
-			return errors.New("cannot generate UUID for session: " + err.Error())
-		}
+		// actually securerandom.Uuid() never errors
+		s.Uuid, _ = securerandom.Uuid()
 	}
 
 	return nil

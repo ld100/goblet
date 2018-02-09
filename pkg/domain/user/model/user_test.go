@@ -9,14 +9,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestHash(t *testing.T) {
+func TestUserHashPassword(t *testing.T) {
 	assert := assert.New(t)
 	password := "12345zOMFG"
 	hash, _ := HashPassword(password)
 	assert.NotEqual(password, hash, "Password should have hash not equal to the password itself")
 }
 
-func TestCheckPasswordHash(t *testing.T) {
+func TestUserCheckPasswordHash(t *testing.T) {
 	assert := assert.New(t)
 	password := "12345zOMFG"
 	hash, _ := HashPassword(password)
