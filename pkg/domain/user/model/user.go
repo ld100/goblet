@@ -58,7 +58,8 @@ func (u User) Validate(db *gorm.DB) {
 }
 
 func HashPassword(password string) (hash string, err error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	COST := 14
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), COST)
 	return string(bytes), err
 }
 
