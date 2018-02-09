@@ -10,25 +10,22 @@ import (
 )
 
 func TestHash(t *testing.T) {
+	assert := assert.New(t)
 	password := "12345zOMFG"
 	hash, _ := HashPassword(password)
-
-	if password == hash {
-		t.Errorf("Password %s should have hash not equal to the password itself", password)
-	}
+	assert.NotEqual(password, hash, "Password should have hash not equal to the password itself")
 }
 
 func TestCheckPasswordHash(t *testing.T) {
+	assert := assert.New(t)
 	password := "12345zOMFG"
 	hash, _ := HashPassword(password)
-	equals := CheckPasswordHash(password, hash)
-
-	if !equals {
-		t.Errorf("Password %s hash %s is incorrect", password, hash)
-	}
+	assert.Equal(CheckPasswordHash(password, hash), true, "Password %s hash %s is incorrect")
 }
 
 func TestUserBeforeUpdate(t *testing.T) {
+	assert := assert.New(t)
+
 	uuid, _ := securerandom.Uuid()
 	password := "12345zOMFG"
 	user := &User{
@@ -39,22 +36,14 @@ func TestUserBeforeUpdate(t *testing.T) {
 	}
 
 	err := user.BeforeUpdate()
-	if err != nil {
-		t.Errorf("Password autohashing does not work")
-	} else {
-		if user.Password == password {
-			t.Errorf("Password autohashing does not work, password was not hashed")
-		} else {
+	if assert.Nil(err, "Password autohashing does not work") {
+		if assert.NotEqual(user.Password, password, "Password was not hashed") {
 			// Password was autohashed successfully
 			// running BeforeUpdate for the second time, it should not hash password again
 			tempHash := user.Password
 			err := user.BeforeUpdate()
-			if err != nil {
-				t.Errorf("Password autohashing does not work")
-			} else {
-				if tempHash != user.Password {
-					t.Errorf("Password was rehashed while not needed")
-				}
+			if assert.Nil(err, "Password autohashing does not work") {
+				assert.Equal(tempHash, user.Password, "Password was rehashed while not needed")
 			}
 		}
 	}

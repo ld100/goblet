@@ -10,6 +10,7 @@ import (
 )
 
 func TestSessionBeforeCreate(t *testing.T) {
+	assert := assert.New(t)
 	password := "12345zOMFG"
 	user := &User{
 		ID:       1,
@@ -26,12 +27,8 @@ func TestSessionBeforeCreate(t *testing.T) {
 	}
 
 	err := session.BeforeCreate()
-	if err != nil {
-		t.Errorf("UUID generation for sessions does not work: error")
-	} else {
-		if len(session.Uuid) < 1 {
-			t.Errorf("UUID generation for sessions does not work: UUID is empty")
-		}
+	if assert.Nil(err, "UUID generation for sessions does not work: error") {
+		assert.NotZero(len(session.Uuid), "UUID generation for sessions does not work: UUID is empty")
 	}
 }
 
