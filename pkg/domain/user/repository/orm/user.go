@@ -2,24 +2,26 @@
 package orm
 
 import (
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
-	_ "github.com/lib/pq"
-
 	usererrors "github.com/ld100/goblet/pkg/domain/user/error"
 	"github.com/ld100/goblet/pkg/domain/user/model"
 	"github.com/ld100/goblet/pkg/domain/user/repository"
-	"github.com/ld100/goblet/pkg/util/log"
+	"github.com/ld100/goblet/pkg/server/env"
 )
 
 type ormUserRepository struct {
-	Conn *gorm.DB
+	Env *env.Env
 }
 
 func (repo *ormUserRepository) GetAll() ([]*model.User, error) {
+	log := repo.Env.Logger
+	conn, err := repo.Env.DB.ORMConnection()
+	if err != nil {
+		return nil, err
+	}
+
 	var users []*model.User
 	var errs []error
-	errs = repo.Conn.Find(&users).GetErrors()
+	errs = conn.Find(&users).GetErrors()
 	if len(errs) > 0 {
 		log.Warn(errs)
 		return nil, usererrors.INTERNAL_SERVER_ERROR
@@ -28,9 +30,15 @@ func (repo *ormUserRepository) GetAll() ([]*model.User, error) {
 }
 
 func (repo *ormUserRepository) GetByID(id uint) (*model.User, error) {
+	log := repo.Env.Logger
+	conn, err := repo.Env.DB.ORMConnection()
+	if err != nil {
+		return nil, err
+	}
+
 	u := &model.User{ID: id}
 	var errs []error
-	errs = repo.Conn.First(&u, u.ID).GetErrors()
+	errs = conn.First(&u, u.ID).GetErrors()
 	if len(errs) > 0 {
 		log.Debug(errs)
 		return nil, usererrors.NOT_FOUND_ERROR
@@ -40,9 +48,15 @@ func (repo *ormUserRepository) GetByID(id uint) (*model.User, error) {
 }
 
 func (repo *ormUserRepository) GetByEmail(email string) (*model.User, error) {
+	log := repo.Env.Logger
+	conn, err := repo.Env.DB.ORMConnection()
+	if err != nil {
+		return nil, err
+	}
+
 	u := &model.User{Email: email}
 	var errs []error
-	errs = repo.Conn.Where("email = ?", u.Email).First(&u).GetErrors()
+	errs = conn.Where("email = ?", u.Email).First(&u).GetErrors()
 	if len(errs) > 0 {
 		log.Debug(errs)
 		return nil, usererrors.NOT_FOUND_ERROR
@@ -52,8 +66,14 @@ func (repo *ormUserRepository) GetByEmail(email string) (*model.User, error) {
 }
 
 func (repo *ormUserRepository) Update(u *model.User) (*model.User, error) {
+	log := repo.Env.Logger
+	conn, err := repo.Env.DB.ORMConnection()
+	if err != nil {
+		return nil, err
+	}
+
 	var errs []error
-	errs = repo.Conn.Save(&u).GetErrors()
+	errs = conn.Save(&u).GetErrors()
 	if len(errs) > 0 {
 		log.Debug(errs)
 		return nil, usererrors.NOT_FOUND_ERROR
@@ -62,9 +82,15 @@ func (repo *ormUserRepository) Update(u *model.User) (*model.User, error) {
 }
 
 func (repo *ormUserRepository) Store(u *model.User) (uint, error) {
-	if repo.Conn.NewRecord(u) {
+	log := repo.Env.Logger
+	conn, err := repo.Env.DB.ORMConnection()
+	if err != nil {
+		return 0, err
+	}
+
+	if conn.NewRecord(u) {
 		var errs []error
-		errs = repo.Conn.Save(&u).GetErrors()
+		errs = conn.Save(&u).GetErrors()
 		if len(errs) > 0 {
 			log.Debug(errs)
 			// TODO: Check whether it is validation, database or data error
@@ -75,10 +101,16 @@ func (repo *ormUserRepository) Store(u *model.User) (uint, error) {
 }
 
 func (repo *ormUserRepository) Delete(id uint) (bool, error) {
+	log := repo.Env.Logger
+	conn, err := repo.Env.DB.ORMConnection()
+	if err != nil {
+		return false, err
+	}
+
 	u := &model.User{ID: id}
-	if !repo.Conn.NewRecord(u) {
+	if !conn.NewRecord(u) {
 		var errs []error
-		errs = repo.Conn.Delete(&u).GetErrors()
+		errs = conn.Delete(&u).GetErrors()
 		if len(errs) > 0 {
 			log.Debug(errs)
 			return false, usererrors.NOT_FOUND_ERROR
@@ -88,6 +120,6 @@ func (repo *ormUserRepository) Delete(id uint) (bool, error) {
 }
 
 // Initiation method
-func NewOrmUserRepository(Conn *gorm.DB) repository.UserRepository {
-	return &ormUserRepository{Conn}
+func NewOrmUserRepository(Env *env.Env) repository.UserRepository {
+	return &ormUserRepository{Env}
 }

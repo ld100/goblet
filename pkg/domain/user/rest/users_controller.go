@@ -3,7 +3,6 @@ package rest
 import (
 	"context"
 	"net/http"
-	"os"
 	"strconv"
 
 	"github.com/go-chi/chi"
@@ -13,25 +12,20 @@ import (
 	"github.com/ld100/goblet/pkg/domain/user/model"
 	"github.com/ld100/goblet/pkg/domain/user/repository/orm"
 	"github.com/ld100/goblet/pkg/domain/user/service"
-	httperrors "github.com/ld100/goblet/pkg/server/rest/error"
-	"github.com/ld100/goblet/pkg/util/log"
 	"github.com/ld100/goblet/pkg/server/env"
+	httperrors "github.com/ld100/goblet/pkg/server/rest/error"
 )
 
-func init() {
-	tokenAuth = jwtauth.New("HS256", []byte(os.Getenv("SECRET_KEY")), nil)
-}
-
+// User endpoint router
 func UserRouter(env *env.Env) chi.Router {
-	// Persistence/Data layers wiring
-	dbConn, err := env.DB.ORMConnection()
-	if err != nil {
-		log.Fatal("cannot connect UserRouter to the database", err)
-	}
+	// Initializing JWT auth
+	cfg := env.Config
+	tokenAuth = jwtauth.New("HS256", []byte(cfg.GetString("SECRET_KEY")), nil)
 
-	userRepo := orm.NewOrmUserRepository(dbConn)
+	// Persistence/Data layers wiring
+	userRepo := orm.NewOrmUserRepository(env)
 	userService := service.NewUserService(userRepo)
-	handler := &RESTUserHandler{UService: userService}
+	handler := &RESTUserHandler{UService: userService, Env: env}
 
 	// RESTful routes
 	r := chi.NewRouter()
@@ -50,6 +44,7 @@ func UserRouter(env *env.Env) chi.Router {
 
 type RESTUserHandler struct {
 	UService service.UserService
+	Env      *env.Env
 }
 
 func (handler *RESTUserHandler) GetByID(w http.ResponseWriter, r *http.Request) {
@@ -78,8 +73,9 @@ func (handler *RESTUserHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func (handler *RESTUserHandler) Update(w http.ResponseWriter, r *http.Request) {
-	user := r.Context().Value("user").(*model.User)
+	log := handler.Env.Logger
 
+	user := r.Context().Value("user").(*model.User)
 	data := &UserRequest{User: user}
 
 	if err := render.Bind(r, data); err != nil {

@@ -3,8 +3,6 @@ package rest
 import (
 	"errors"
 	"net/http"
-	"os"
-	"strconv"
 	"time"
 
 	"github.com/go-chi/chi"
@@ -14,31 +12,26 @@ import (
 	"github.com/ld100/goblet/pkg/domain/user/model"
 	"github.com/ld100/goblet/pkg/domain/user/repository/orm"
 	"github.com/ld100/goblet/pkg/domain/user/service"
-	httperrors "github.com/ld100/goblet/pkg/server/rest/error"
-	"github.com/ld100/goblet/pkg/util/log"
 	"github.com/ld100/goblet/pkg/server/env"
+	httperrors "github.com/ld100/goblet/pkg/server/rest/error"
 )
 
 var tokenAuth *jwtauth.JWTAuth
 
-func init() {
-	tokenAuth = jwtauth.New("HS256", []byte(os.Getenv("SECRET_KEY")), nil)
-}
-
+// Session endpoint router
 func SessionRouter(env *env.Env) chi.Router {
-	// Persistence/Data layers wiring
-	dbConn, err := env.DB.ORMConnection()
-	if err != nil {
-		log.Fatal("cannot connect SessionRouter to the database", err)
-	}
+	// Initializing JWT auth
+	cfg := env.Config
+	tokenAuth = jwtauth.New("HS256", []byte(cfg.GetString("SECRET_KEY")), nil)
 
-	sessionRepo := orm.NewOrmSessionRepository(dbConn)
+	// Persistence/Data layers wiring
+	sessionRepo := orm.NewOrmSessionRepository(env)
 	sessionService := service.NewSessionService(sessionRepo)
 
-	userRepo := orm.NewOrmUserRepository(dbConn)
+	userRepo := orm.NewOrmUserRepository(env)
 	userService := service.NewUserService(userRepo)
 
-	handler := &RESTSessionHandler{SService: sessionService, UService: userService}
+	handler := &RESTSessionHandler{SService: sessionService, UService: userService, Env: env}
 
 	// RESTful routes
 	r := chi.NewRouter()
@@ -60,10 +53,14 @@ func SessionRouter(env *env.Env) chi.Router {
 type RESTSessionHandler struct {
 	SService service.SessionService
 	UService service.UserService
+	Env      *env.Env
 }
 
 // TODO: Move login and token issuing logic out of controller
 func (handler *RESTSessionHandler) Store(w http.ResponseWriter, r *http.Request) {
+	log := handler.Env.Logger
+	cfg := handler.Env.Config
+
 	// Issue access token based on session
 	// Generate response with access token
 
@@ -85,7 +82,7 @@ func (handler *RESTSessionHandler) Store(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	hours, _ := strconv.Atoi(os.Getenv("SESSION_TTL_HOURS"))
+	hours := cfg.GetInt("SESSION_TTL_HOURS")
 	hoursDuration := time.Duration(hours)
 	session := &model.Session{
 		UserID:    user.ID,
@@ -118,6 +115,8 @@ func (handler *RESTSessionHandler) Store(w http.ResponseWriter, r *http.Request)
 }
 
 func (handler *RESTSessionHandler) Delete(w http.ResponseWriter, r *http.Request) {
+	log := handler.Env.Logger
+
 	_, claims, _ := jwtauth.FromContext(r.Context())
 
 	idValue := claims["sessionID"]
