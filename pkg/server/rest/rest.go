@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"os"
-	"strconv"
 	"time"
 
 	"github.com/go-chi/chi"
@@ -21,6 +19,7 @@ import (
 )
 
 var (
+	appName       string
 	serverStarted = prometheus.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "http_handler_started_requests_total",
@@ -61,12 +60,13 @@ var (
 	)
 )
 
+// Server HTTP REST Requests
 func Serve(env *env.Env) {
+	// Link config to easily-accessible variable
+	cfg := env.Config
+	appName = cfg.GetString("APP_NAME")
 
 	// Setup the logger
-	//logger := logrus.New()
-	//logger.Formatter = &logrus.JSONFormatter{}
-
 	logger := env.Logger.Logger
 	lg.RedirectStdlogOutput(logger)
 	lg.DefaultLogger = logger
@@ -92,7 +92,7 @@ func Serve(env *env.Env) {
 	// Instrumented routes
 	r.Group(func(r chi.Router) {
 		// PrometheusInstrumentation
-		prometheusEnabled, _ := strconv.ParseBool(os.Getenv("PROMETHEUS_ENABLED"))
+		prometheusEnabled := cfg.GetBool("PROMETHEUS_ENABLED")
 		if prometheusEnabled {
 			prometheus.MustRegister(serverStarted)
 			prometheus.MustRegister(serverCompleted)
@@ -117,7 +117,7 @@ func Serve(env *env.Env) {
 	})
 
 	bindIP := ""
-	bindPort := os.Getenv("HTTP_PORT")
+	bindPort := cfg.GetInt("HTTP_PORT")
 	bindAddr := fmt.Sprintf("%v:%v", bindIP, bindPort)
 
 	http.ListenAndServe(bindAddr, r)
@@ -151,7 +151,7 @@ func init() {
 // TODO: Plug actual prometheus calls here
 func PrometheusMiddleware(next http.Handler) http.Handler {
 	start := time.Now().UTC().UnixNano()
-	name := os.Getenv("APP_NAME")
+	name := appName
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// "name", "handler", "host", "path", "method", "status"
