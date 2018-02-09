@@ -7,7 +7,7 @@ ENV BUILDDIR /app
 ENV PATH="${BUILDDIR}:${PATH}"
 
 # Install dependencies
-RUN apk --update add git
+RUN apk --update add git make
 
 # Install Golang's dependency manager
 RUN go-wrapper download -u github.com/golang/dep/cmd/dep \

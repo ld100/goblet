@@ -24,3 +24,6 @@
 
 # Local data storage
 data/
+
+# Temporary files
+tmp/

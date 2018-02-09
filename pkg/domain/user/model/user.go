@@ -42,7 +42,7 @@ func (u *User) BeforeCreate() (err error) {
 
 // Detect if password was set, encode it if needed
 func (u *User) BeforeUpdate() (err error) {
-	if !hash.IsBase64(u.Password) {
+	if !hash.IsBcrypt(u.Password) {
 		u.Password, err = HashPassword(u.Password)
 		if err != nil {
 			return errors.New("cannot hash user password: " + err.Error())
@@ -62,7 +62,7 @@ func HashPassword(password string) (hash string, err error) {
 	return string(bytes), err
 }
 
-func CheckPasswordHash(password, hash string) bool {
+func CheckPasswordHash(password string, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
 }
