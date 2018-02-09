@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  name = "github.com/DATA-DOG/go-sqlmock"
+  packages = ["."]
+  revision = "d76b18b42f285b792bf985118980ce9eacea9d10"
+  version = "v1.3.0"
+
+[[projects]]
   name = "github.com/asaskevich/govalidator"
   packages = ["."]
   revision = "521b25f4b05fd26bec69d9dedeb8f9c9a83939a8"
@@ -18,6 +24,12 @@
   packages = ["."]
   revision = "dbc1e22735aa6ed7bd9579a407c17bc7c4a4e046"
   version = "v0.4.1"
+
+[[projects]]
+  name = "github.com/davecgh/go-spew"
+  packages = ["spew"]
+  revision = "346938d642f2ec3594ed81d874461961cd0faa76"
+  version = "v1.1.0"
 
 [[projects]]
   name = "github.com/dgrijalva/jwt-go"
@@ -130,6 +142,12 @@
   version = "v1.1.0"
 
 [[projects]]
+  name = "github.com/pmezard/go-difflib"
+  packages = ["difflib"]
+  revision = "792786c7400a136282c1664665ae0a8db921c6c2"
+  version = "v1.0.0"
+
+[[projects]]
   name = "github.com/pressly/lg"
   packages = ["."]
   revision = "752dffa29016cc0ec353adf9396d3f4ee0e32b2f"
@@ -223,6 +241,12 @@
   version = "v1.0.0"
 
 [[projects]]
+  name = "github.com/stretchr/testify"
+  packages = ["assert"]
+  revision = "12b6f73e6084dad08a7c6e575284b177ecafbc71"
+  version = "v1.2.1"
+
+[[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
   packages = [
@@ -269,6 +293,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "aca2784747243e91b14f18080e0db51669c3247c348d0da67a1f3f50fc5fe142"
+  inputs-digest = "0112bb64618b6c6af491125f122aebc373042aae7b77db89becfecf96ecc99fe"
   solver-name = "gps-cdcl"
   solver-version = 1

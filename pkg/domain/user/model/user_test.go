@@ -3,7 +3,10 @@ package model
 import (
 	"testing"
 
+	sqlmock "github.com/DATA-DOG/go-sqlmock"
+	"github.com/jinzhu/gorm"
 	"github.com/ld100/goblet/pkg/util/securerandom"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestHash(t *testing.T) {
@@ -25,7 +28,7 @@ func TestCheckPasswordHash(t *testing.T) {
 	}
 }
 
-func TestAutoHashPassword(t *testing.T) {
+func TestUserBeforeUpdate(t *testing.T) {
 	uuid, _ := securerandom.Uuid()
 	password := "12345zOMFG"
 	user := &User{
@@ -55,5 +58,53 @@ func TestAutoHashPassword(t *testing.T) {
 			}
 		}
 	}
+}
 
+func TestUserBeforeCreate(t *testing.T) {
+	assert := assert.New(t)
+
+	uuid, _ := securerandom.Uuid()
+	password := "12345zOMFG"
+	user := &User{
+		ID:       1,
+		Uuid:     uuid,
+		Email:    "test@example.com",
+		Password: password,
+	}
+	err := user.BeforeUpdate()
+	assert.Nil(err)
+	assert.NotEqual(password, user.Password, "Password should be hashed on create")
+}
+
+func TestUserValidate(t *testing.T) {
+	assert := assert.New(t)
+
+	db, _, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("can't create sqlmock: %s", err)
+	}
+
+	gormDB, gerr := gorm.Open("postgres", db)
+	if gerr != nil {
+		t.Fatalf("can't open gorm connection: %s", err)
+	}
+	gormDB.LogMode(false)
+	defer gormDB.Close()
+
+	uuid, _ := securerandom.Uuid()
+	password := "12345zOMFG"
+	user := &User{
+		ID:       1,
+		Uuid:     uuid,
+		Email:    "test@example.com",
+		Password: password,
+	}
+
+	user.Validate(gormDB)
+	assert.Equal(0, len(gormDB.GetErrors()))
+
+	// Joe is forbidden name... just for the sake of example
+	user.FirstName = "Joe"
+	user.Validate(gormDB)
+	assert.Equal(1, len(gormDB.GetErrors()))
 }
