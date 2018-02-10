@@ -1,7 +1,7 @@
 # Redis Pure Go Library
-[[constraint]]
-  name = "gopkg.in/redis.v4"
-  version = "4.2.4"
+#[[constraint]]
+#  name = "gopkg.in/redis.v4"
+#  version = "4.2.4"
 
 # Chi HTTP Router/Framework
 [[constraint]]
@@ -14,9 +14,9 @@
   version = "3.1.3"
 
 # Golang implementation of JSON Web Tokens (JWT)
-[[constraint]]
-  name = "github.com/dgrijalva/jwt-go"
-  version = "3.1.0"
+#[[constraint]]
+#  name = "github.com/dgrijalva/jwt-go"
+#  version = "3.1.0"
 
 # Logrus logging library
 [[constraint]]
@@ -78,32 +78,27 @@
     name = "github.com/stretchr/testify"
     version = "1.2.1"
 
-# BDD Testing Framework for Go.
-[[constraint]]
-    name = "github.com/onsi/ginkgo"
-    version = "1.4.0"
-
-# Matchers for ginkgo
-[[constraint]]
-    name = "github.com/onsi/gomega"
-    version = "1.3.0"
-
-# Data generation factories
-[[constraint]]
-  name = "github.com/bluele/factory-go"
-  branch = "master"
-
-# Fake data generator
-[[constraint]]
-    name = "github.com/bxcodec/faker"
-    version = "1.3.0"
-
 # Mock SQL driver for testing database interactions.
 [[constraint]]
     name = "github.com/DATA-DOG/go-sqlmock"
     version = "1.3.0"
 
-# A developer-friendly HTTP request library for Gopher. Inspired by Python-Requests.
+# Database cleaner for DB-dependent tests: https://github.com/khaiql/dbcleaner
 [[constraint]]
-    name = "github.com/mozillazg/request"
-    version = "0.8.0"
+  name = "gopkg.in/khaiql/dbcleaner.v2"
+  version = "v2.1.1"
+
+# Concise, declarative, and easy to use end-to-end HTTP and REST API testing: https://github.com/gavv/httpexpect
+#[[constraint]]
+#  name = "github.com/gavv/httpexpect"
+#  branch = "v1"
+
+## Data generation factories
+#[[constraint]]
+#  name = "github.com/bluele/factory-go"
+#  branch = "master"
+#
+## Fake data generator
+#[[constraint]]
+#    name = "github.com/bxcodec/faker"
+#    version = "1.3.0"

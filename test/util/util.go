@@ -3,35 +3,34 @@ package util
 import (
 	"fmt"
 	"net/http"
+	"net/http/httptest"
+	"testing"
 
-	"github.com/mozillazg/request"
+	"github.com/go-chi/chi"
 )
 
-func Get(url string) {
-	c := new(http.Client)
-	req := request.NewRequest(c)
-	resp, err := req.Get("http://httpbin.org/get")
-	if err != nil {
+var VERSION = "0.0.1"
 
-	}
-	j, err := resp.Json()
-	if err != nil {
-
-	}
-	defer resp.Body.Close() // Don't forget close the response body
-	fmt.Println(j)
+func FruitsHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
 }
 
-func Post(url string, body map[string]string) {
-	c := new(http.Client)
-	req := request.NewRequest(c)
-	req.Data = map[string]string{
-		"key": "value",
-		"a":   "123",
-	}
-	resp, err := req.Post("http://httpbin.org/post")
-	if err != nil {
+func TestFruits(t *testing.T) {
+	// create http.Handler
+	handler := chi.NewRouter()
+	handler.Get("/fruits", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("welcome"))
+	})
 
-	}
-	fmt.Println(resp)
+	// run server using httptest
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	// create httpexpect instance
+	//e := httpexpect.New(t, server.URL)
+	//
+	//// is it working?
+	//e.GET("/fruits").
+	//	Expect().
+	//	Status(http.StatusOK).JSON().Array().Empty()
 }

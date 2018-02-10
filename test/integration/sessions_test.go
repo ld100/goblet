@@ -1,45 +1,43 @@
 package sessions_test
 
 import (
+	"fmt"
+	"testing"
+
 	"github.com/ld100/goblet/test/util"
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
+	"gopkg.in/khaiql/dbcleaner.v2"
+	"gopkg.in/khaiql/dbcleaner.v2/engine"
+	"github.com/stretchr/testify/suite"
+	_ "github.com/lib/pq"
 )
 
-var _ = Describe("Session", func() {
-	var (
-		//longBook  Book
-		//shortBook Book
-	)
+var Cleaner = dbcleaner.New()
 
-	BeforeEach(func() {
-		//longBook = Book{
-		//	Title:  "Les Miserables",
-		//	Author: "Victor Hugo",
-		//	Pages:  1488,
-		//}
-		//
-		//shortBook = Book{
-		//	Title:  "Fox In Socks",
-		//	Author: "Dr. Seuss",
-		//	Pages:  24,
-		//}
-	})
+type ExampleSuite struct {
+	suite.Suite
+}
 
-	Describe("Categorizing book length", func() {
-		Context("With more than 300 pages", func() {
-			It("should be a novel", func() {
-				//Expect(longBook.CategoryByLength()).To(Equal("NOVEL"))
-				util.Get("http://httpbin.org/get")
-				Expect(1).To(Equal(1))
-			})
-		})
+func (suite *ExampleSuite) SetupSuite() {
+	// Init and set mysql cleanup engine
+	dsn := fmt.Sprintf("host=%v user=%v dbname=%v sslmode=disable password=%v port=%v", "postgres", "postgres","goblet_development", "", 5432)
+	postgres := engine.NewPostgresEngine(dsn)
+	Cleaner.SetEngine(postgres)
+}
 
-		Context("With fewer than 300 pages", func() {
-			It("should be a short story", func() {
-				//Expect(shortBook.CategoryByLength()).To(Equal("SHORT STORY"))
-				Expect(1).To(Equal(1))
-			})
-		})
-	})
-})
+func (suite *ExampleSuite) SetupTest() {
+	Cleaner.Acquire("users")
+}
+
+func (suite *ExampleSuite) TearDownTest() {
+	Cleaner.Clean("users")
+}
+
+func (suite *ExampleSuite) TestSomething() {
+	// Have some meaningful test
+	suite.Equal(true, true)
+	fmt.Println(util.VERSION)
+}
+
+func TestRunSuite(t *testing.T) {
+	suite.Run(t, new(ExampleSuite))
+}
