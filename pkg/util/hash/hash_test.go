@@ -4,8 +4,8 @@ import (
 	"encoding/base64"
 	"testing"
 
-	"golang.org/x/crypto/bcrypt"
 	"github.com/stretchr/testify/assert"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func TestIsBcrypt(t *testing.T) {

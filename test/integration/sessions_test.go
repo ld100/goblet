@@ -5,10 +5,10 @@ import (
 	"testing"
 
 	"github.com/ld100/goblet/test/util"
+	_ "github.com/lib/pq"
+	"github.com/stretchr/testify/suite"
 	"gopkg.in/khaiql/dbcleaner.v2"
 	"gopkg.in/khaiql/dbcleaner.v2/engine"
-	"github.com/stretchr/testify/suite"
-	_ "github.com/lib/pq"
 )
 
 var Cleaner = dbcleaner.New()
