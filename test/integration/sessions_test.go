@@ -7,6 +7,7 @@ import (
 	"github.com/ld100/goblet/test/util"
 	_ "github.com/lib/pq"
 	"github.com/stretchr/testify/suite"
+	"gopkg.in/khaiql/dbcleaner.v2"
 	"gopkg.in/khaiql/dbcleaner.v2/engine"
 )
 
