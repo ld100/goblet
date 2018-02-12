@@ -68,7 +68,7 @@ func (db *DBUtil) Exists(name string) (bool, error) {
 	}
 
 	defer rows.Close()
-	var datname string;
+	var datname string
 	for rows.Next() {
 		err = rows.Scan(&datname)
 		if err != nil {

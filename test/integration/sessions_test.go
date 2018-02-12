@@ -5,10 +5,9 @@ import (
 	"testing"
 
 	"github.com/ld100/goblet/test/util"
-	"gopkg.in/khaiql/dbcleaner.v2"
-	"gopkg.in/khaiql/dbcleaner.v2/engine"
-	"github.com/stretchr/testify/suite"
 	_ "github.com/lib/pq"
+	"github.com/stretchr/testify/suite"
+	"gopkg.in/khaiql/dbcleaner.v2/engine"
 )
 
 var Cleaner = dbcleaner.New()
@@ -19,7 +18,7 @@ type ExampleSuite struct {
 
 func (suite *ExampleSuite) SetupSuite() {
 	// Init and set mysql cleanup engine
-	dsn := fmt.Sprintf("host=%v user=%v dbname=%v sslmode=disable password=%v port=%v", "postgres", "postgres","goblet_development", "", 5432)
+	dsn := fmt.Sprintf("host=%v user=%v dbname=%v sslmode=disable password=%v port=%v", "postgres", "postgres", "goblet_development", "", 5432)
 	postgres := engine.NewPostgresEngine(dsn)
 	Cleaner.SetEngine(postgres)
 }
