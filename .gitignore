@@ -22,6 +22,9 @@
 # GoLand
 .idea/
 
+# Visual Studio Code
+.vscode/
+
 # Local data storage
 data/
 

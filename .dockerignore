@@ -4,6 +4,7 @@ bundles
 .go-pkg-cache
 .git
 .idea/
+.vscode/
 
 # Local data storage
 data/
